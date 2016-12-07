@@ -13,6 +13,7 @@ public class DBUtil {
 		driver = "com.mysql.jdbc.Driver"; 
 		url = "jdbc:mysql://127.0.0.1:3306/jjdev";
 		
+		
 		//oracle
 		//driver = "oracle.jdbc.OracleDriver"; 
 		//url = "jdbc:oracle:thin:@localhost:1521:xe";
