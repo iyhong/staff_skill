@@ -11,6 +11,10 @@ public class Religion {
 		this.no = no;
 		this.name = name;
 	}
+	public Religion(int no) {
+		super();
+		this.no = no;
+	}
 	public int getNo() {
 		return no;
 	}

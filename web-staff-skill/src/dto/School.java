@@ -7,6 +7,10 @@ public class School {
 	public School() {
 		super();
 	}
+	public School(int no) {
+		super();
+		this.no = no;
+	}
 	
 	public School(int no, String graduate) {
 		super();
