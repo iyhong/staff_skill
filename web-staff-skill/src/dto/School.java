@@ -3,14 +3,17 @@ package dto;
 public class School {
 	private int no;
 	private String graduate;
+	
 	public School() {
 		super();
 	}
+	
 	public School(int no, String graduate) {
 		super();
 		this.no = no;
 		this.graduate = graduate;
 	}
+	
 	public int getNo() {
 		return no;
 	}
@@ -23,6 +26,7 @@ public class School {
 	public void setGraduate(String graduate) {
 		this.graduate = graduate;
 	}
+	
 	@Override
 	public String toString() {
 		return "School [no=" + no + ", graduate=" + graduate + "]";

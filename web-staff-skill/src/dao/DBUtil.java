@@ -11,7 +11,7 @@ public class DBUtil {
 	static {
 		//mysql
 		driver = "com.mysql.jdbc.Driver"; 
-		url = "jdbc:mysql://127.0.0.1:3306/jjdev";
+		url = "jdbc:mysql://127.0.0.1:3306/jjdev2?useUnicode=true&characterEncoding=euckr";
 		
 		
 		//oracle
@@ -23,15 +23,14 @@ public class DBUtil {
 	}
 	
 	public static Connection getConnection() {
+		System.out.println("getConnection() 진입");
 		Connection connection = null;
 		try{
 			Class.forName(driver);
 			connection = DriverManager.getConnection(url, user, pw);
-			
+			System.out.println("드라이버로딩, connection 완료");
 		}catch(Exception e){
 			e.printStackTrace();
-		}finally{
-			try{if(connection != null)connection.close();}catch(Exception e){}
 		}
 		
 		return connection;
