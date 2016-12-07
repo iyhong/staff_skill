@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import dto.Religion;
 import dto.School;
+import dto.Search;
 import dto.Skill;
 import dto.Staff;
 
@@ -15,6 +16,7 @@ public class Dao {
 	static Connection conn = null;
 	static PreparedStatement pstmt;
 	static ResultSet rs;
+	
 	
 	//모든 기술 가져오기
 	public static ArrayList<Skill> selectSkill(){
@@ -131,6 +133,69 @@ public class Dao {
 		
 		return rowCount;
 		
+	}
+	
+	public static ArrayList<Staff> searchStaff(Search search){
+		System.out.println("searchStaff() 진입");
+		String sql = "";
+		Staff staff;
+		ArrayList<Staff> staffList = null;
+		PreparedStatement pstmtSkill;
+		ResultSet rsSkill;
+		if(search.getName()==""&&
+				search.getGender()==null&&
+				search.getSchoolNo()==null&&
+				search.getSkillNo()==null&&
+				search.getGraduateDayEnd()==""&&
+				search.getGraduateDayStart()==""){
+			sql = "select st.name,substring(sn, 8,1)as sn,re.name as religionno , sc.graduate as schoolno,graduateday from staff st inner join religion re on st.religionno = re.`no` inner join school sc on st.schoolno = sc.`no`";
+			try{
+				conn = DBUtil.getConnection();
+				
+				pstmt = conn.prepareStatement(sql);
+				rs = pstmt.executeQuery();
+				System.out.println("staff 입력성공");
+				staffList = new ArrayList<Staff>();
+				while(rs.next()){
+					staff = new Staff();
+					staff.setName(rs.getString("name"));
+					
+					//주민번호 잘른 숫자가져와서 담고 2로나누어 떨이지면 '여' 안떨어지면'남'을 셋팅
+					int genderNum = Integer.parseInt(rs.getString("sn"));
+					System.out.println("genderNum : "+genderNum);
+					if(genderNum%2!=0){
+						staff.setSn("남");
+					}else{
+						staff.setSn("여");
+					}
+					
+					staff.setGraduateday(rs.getString("graduateday"));
+					School school = new School();
+					school.setGraduate(rs.getString("schoolno"));;
+					staff.setSchool(school);
+					Religion religion = new Religion();
+					religion.setName(rs.getString("religionno"));
+					staff.setReligion(religion);
+					System.out.println(staff);
+					pstmt = conn.prepareStatement("select ");
+					rs = pstmt.executeQuery();
+					
+					
+					
+					staffList.add(staff);
+				}
+				System.out.println("전체리스트 가져옴");
+				
+			} catch(Exception e){
+				e.printStackTrace();
+			}finally{
+				close();
+			}
+			
+			
+		}
+		
+		return staffList;
 	}
 	
 	
