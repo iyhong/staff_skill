@@ -64,13 +64,9 @@ public class StaffSearchAction extends HttpServlet {
 		
 		//종교받기
 		if(request.getParameter("religionNo")!= null){
-			String[] religionStr = request.getParameterValues("religionNo");
-			int[] religion = new int[religionStr.length];
-			for(int i = 0 ; i<religionStr.length;i++){
-				religion[i] = Integer.parseInt(religionStr[i]);
-				System.out.println("religion : " + religion[i]);
-			}
-			search.setReligionNo(religion);
+			int religionNo = Integer.parseInt(request.getParameter("religionNo"));
+			
+			search.setReligionNo(religionNo);
 		}
 		
 		//학력받기

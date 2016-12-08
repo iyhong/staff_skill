@@ -18,6 +18,7 @@
 			<td>종교</td>
 			<td>
 				<select name="religionNo">
+					<option value="0">::종교선택::</option>
 					<c:forEach items="${religionList}" var="re">
 						<option value="${re.no}" >${re.name}</option>
 					</c:forEach>

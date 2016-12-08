@@ -5,7 +5,7 @@ import java.util.Arrays;
 public class Search {
 	private String name;
 	private String[] gender;
-	private int[] religionNo;
+	private int religionNo;
 	private int[] schoolNo;
 	private int[] skillNo;
 	private String graduateDayStart;
@@ -16,7 +16,7 @@ public class Search {
 	}
 	
 	
-	public Search(String name, String[] gender, int[] religionNo, int[] schoolNo, int[] skillNo, String graduateDayStart,
+	public Search(String name, String[] gender, int religionNo, int[] schoolNo, int[] skillNo, String graduateDayStart,
 			String graduateDayEnd) {
 		super();
 		this.name = name;
@@ -42,10 +42,10 @@ public class Search {
 	public void setGender(String[] gender) {
 		this.gender = gender;
 	}
-	public int[] getReligionNo() {
+	public int getReligionNo() {
 		return religionNo;
 	}
-	public void setReligionNo(int[] religionNo) {
+	public void setReligionNo(int religionNo) {
 		this.religionNo = religionNo;
 	}
 	public int[] getSchoolNo() {
@@ -76,13 +76,9 @@ public class Search {
 
 	@Override
 	public String toString() {
-		return "Search [name=" + name + ", gender=" + Arrays.toString(gender) + ", religionNo="
-				+ Arrays.toString(religionNo) + ", schoolNo=" + Arrays.toString(schoolNo) + ", skillNo="
-				+ Arrays.toString(skillNo) + ", graduateDayStart=" + graduateDayStart + ", graduateDayEnd="
-				+ graduateDayEnd + "]";
+		return "Search [name=" + name + ", gender=" + Arrays.toString(gender) + ", religionNo=" + religionNo
+				+ ", schoolNo=" + Arrays.toString(schoolNo) + ", skillNo=" + Arrays.toString(skillNo)
+				+ ", graduateDayStart=" + graduateDayStart + ", graduateDayEnd=" + graduateDayEnd + "]";
 	}
 
-	
-	
-	
 }
