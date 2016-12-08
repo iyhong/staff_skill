@@ -166,9 +166,10 @@ public class Dao {
 					||search.getSchoolNo()!=null||search.getSkillNo()!=null
 					||search.getGraduateDayStart()!=""||search.getGraduateDayEnd()!=""){
 				sqlAdd += "where ";
+				System.out.println("where 단어 삽입 완료");
 			}
 			
-			//gender
+			//성별 확인
 			if(search.getGender()!=null){
 				System.out.println("gnder 확인 분기문");
 				String[] genderList = search.getGender();
@@ -185,8 +186,26 @@ public class Dao {
 						gender2 = 4;
 					}
 					sqlAdd += "substring(sn, 8,1)='"+gender1+"' or substring(sn, 8,1)='"+gender2+"'";
-				}else{
-					sqlAdd = "";
+				}
+			}
+			
+			//종교 확인
+			if(search.getReligionNo()!=0){
+				System.out.println("religion 확인 분기문");
+				int religion = search.getReligionNo();
+				sqlAdd += "st.religionno='"+religion+"'";
+			}
+			
+			//학력 확인
+			if(search.getSchoolNo()!=null){
+				System.out.println("school 확인 분기문");
+				int[] schoolList = search.getSchoolNo();
+				for(int i = 0; i<schoolList.length;i++){
+					int schoolno = schoolList[i];
+					sqlAdd += "st.schoolno='"+schoolno+"'";
+					if(i!=schoolList.length-1){
+						sqlAdd += " or ";
+					}
 				}
 			}
 			
