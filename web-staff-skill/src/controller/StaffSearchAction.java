@@ -27,11 +27,22 @@ public class StaffSearchAction extends HttpServlet {
 		request.setAttribute("schoolList", schoolList);
 		request.setAttribute("religionList", religionList);
 		
+		
+		ArrayList<Staff> list = Dao.allStaff();
+		request.setAttribute("list", list);
 		request.getRequestDispatcher("/WEB-INF/jsp/staffSearchList.jsp").forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("StaffSearchAction doPost()");
+		ArrayList<Skill> skillList = Dao.selectSkill();
+		ArrayList<School> schoolList = Dao.selectSchool();
+		ArrayList<Religion> religionList = Dao.selectReligion();
+		
+		request.setAttribute("skillList", skillList);
+		request.setAttribute("schoolList", schoolList);
+		request.setAttribute("religionList", religionList);
+		
 		request.setCharacterEncoding("euc-kr");
 		
 		Search search = new Search();
@@ -94,7 +105,7 @@ public class StaffSearchAction extends HttpServlet {
 			System.out.println("graduateDayEnd : "+graduateDayEnd);
 			search.setGraduateDayEnd(graduateDayEnd);
 		}
-		
+		System.out.println(search);
 		ArrayList<Staff> list = Dao.searchStaff(search);
 		request.setAttribute("list", list);
 		request.getRequestDispatcher("/WEB-INF/jsp/staffSearchList.jsp").forward(request, response);

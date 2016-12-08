@@ -135,20 +135,85 @@ public class Dao {
 		
 	}
 	
-	public static ArrayList<Staff> searchStaff(Search search){
-		System.out.println("searchStaff() 진입");
+	public static ArrayList<Staff> allStaff(){
+		System.out.println("Dao.java allStaff() 진입");
 		String sql = "";
 		Staff staff;
 		ArrayList<Staff> staffList = null;
 		PreparedStatement pstmtSkill;
 		ResultSet rsSkill;
+		ArrayList<Skill> skillList = null;
+		sql = "select st.`no`,st.name,substring(sn, 8,1)as sn,re.name as religionno , sc.graduate as schoolno,graduateday from staff st inner join religion re on st.religionno = re.`no` inner join school sc on st.schoolno = sc.`no`";
+		try{
+			conn = DBUtil.getConnection();
+			
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			System.out.println("staff 입력성공");
+			staffList = new ArrayList<Staff>();
+			while(rs.next()){
+				staff = new Staff();
+				staff.setName(rs.getString("name"));
+				
+				//주민번호 잘른 숫자가져와서 담고 2로나누어 떨이지면 '여' 안떨어지면'남'을 셋팅
+				int genderNum = Integer.parseInt(rs.getString("sn"));
+				System.out.println("genderNum : "+genderNum);
+				if(genderNum%2!=0){
+					staff.setSn("남");
+				}else{
+					staff.setSn("여");
+				}
+				
+				staff.setGraduateday(rs.getString("graduateday"));
+				School school = new School();
+				school.setGraduate(rs.getString("schoolno"));;
+				staff.setSchool(school);
+				Religion religion = new Religion();
+				religion.setName(rs.getString("religionno"));
+				staff.setReligion(religion);
+				System.out.println(staff);
+				
+				//skill 가져오는 쿼리문
+				pstmtSkill = conn.prepareStatement("select  staffskill.staffno , staffskill.skillno, skill.name from staffskill inner join skill on staffskill.skillno = skill.`no`  where staffskill.staffno=? ; ");
+				pstmtSkill.setInt(1, rs.getInt("no"));
+				rsSkill = pstmtSkill.executeQuery();
+				skillList = new ArrayList<Skill>();
+				while(rsSkill.next()){
+					Skill skill = new Skill();
+					skill.setName(rsSkill.getString("name"));
+					skillList.add(skill);
+				}
+				staff.setSkillList(skillList);
+				
+				
+				
+				staffList.add(staff);
+			}
+			System.out.println("전체리스트 가져옴");
+			
+		} catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			close();
+		}
+		return staffList;
+	}
+	
+	public static ArrayList<Staff> searchStaff(Search search){
+		System.out.println("Dao.java searchStaff() 진입");
+		String sql = "";
+		Staff staff;
+		ArrayList<Staff> staffList = null;
+		PreparedStatement pstmtSkill;
+		ResultSet rsSkill;
+		ArrayList<Skill> skillList = null;
 		if(search.getName()==""&&
 				search.getGender()==null&&
 				search.getSchoolNo()==null&&
 				search.getSkillNo()==null&&
 				search.getGraduateDayEnd()==""&&
 				search.getGraduateDayStart()==""){
-			sql = "select st.name,substring(sn, 8,1)as sn,re.name as religionno , sc.graduate as schoolno,graduateday from staff st inner join religion re on st.religionno = re.`no` inner join school sc on st.schoolno = sc.`no`";
+			sql = "select st.`no`,st.name,substring(sn, 8,1)as sn,re.name as religionno , sc.graduate as schoolno,graduateday from staff st inner join religion re on st.religionno = re.`no` inner join school sc on st.schoolno = sc.`no`";
 			try{
 				conn = DBUtil.getConnection();
 				
@@ -177,8 +242,18 @@ public class Dao {
 					religion.setName(rs.getString("religionno"));
 					staff.setReligion(religion);
 					System.out.println(staff);
-					pstmt = conn.prepareStatement("select ");
-					rs = pstmt.executeQuery();
+					
+					//skill 가져오는 쿼리문
+					pstmtSkill = conn.prepareStatement("select  staffskill.staffno , staffskill.skillno, skill.name from staffskill inner join skill on staffskill.skillno = skill.`no`  where staffskill.staffno=? ; ");
+					pstmtSkill.setInt(1, rs.getInt("no"));
+					rsSkill = pstmtSkill.executeQuery();
+					skillList = new ArrayList<Skill>();
+					while(rsSkill.next()){
+						Skill skill = new Skill();
+						skill.setName(rsSkill.getString("name"));
+						skillList.add(skill);
+					}
+					staff.setSkillList(skillList);
 					
 					
 					

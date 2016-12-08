@@ -1,5 +1,8 @@
 package dto;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class Staff {
 	private int no;
 	private String name;
@@ -7,10 +10,20 @@ public class Staff {
 	private String graduateday;
 	private School school;
 	private Religion religion;
+	private ArrayList<Skill> skillList;
+	
 	public Staff() {
 		super();
 	}
-	public Staff(int no, String name, String sn, String graduateday, School school, Religion religion) {
+	
+	
+	
+	
+
+
+
+	public Staff(int no, String name, String sn, String graduateday, School school, Religion religion,
+			ArrayList<Skill> skillList) {
 		super();
 		this.no = no;
 		this.name = name;
@@ -18,7 +31,15 @@ public class Staff {
 		this.graduateday = graduateday;
 		this.school = school;
 		this.religion = religion;
+		this.skillList = skillList;
 	}
+
+
+
+
+
+
+
 	public int getNo() {
 		return no;
 	}
@@ -55,9 +76,24 @@ public class Staff {
 	public void setReligion(Religion religion) {
 		this.religion = religion;
 	}
+	
+	
+	public ArrayList<Skill> getSkillList() {
+		return skillList;
+	}
+
+	public void setSkillList(ArrayList<Skill> skillList) {
+		this.skillList = skillList;
+	}
+
+
 	@Override
 	public String toString() {
 		return "Staff [no=" + no + ", name=" + name + ", sn=" + sn + ", graduateday=" + graduateday + ", school="
-				+ school + ", religion=" + religion + "]";
+				+ school + ", religion=" + religion + ", skillList=" + skillList + "]";
 	}
+
+
+	
+	
 }

@@ -27,7 +27,11 @@
 					<td>${staff.sn}</td>
 					<td>${staff.religion.name}</td>
 					<td>${staff.school.graduate}</td>
-					<td>java html5 SQL JSP</td>
+					<td>
+						<c:forEach items="${staff.skillList}" var="skillList">
+							${skillList.name} 
+						</c:forEach>
+					</td>
 					<td>${staff.graduateday}</td>
 					<td>수정</td>
 					<td>삭제</td>
