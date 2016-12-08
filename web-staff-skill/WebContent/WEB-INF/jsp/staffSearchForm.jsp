@@ -7,7 +7,7 @@
 <title></title>
 </head>
 <body>
-
+<a href="<c:url value="/StaffInsertAction"/>">등록</a>
 <form action="<c:url value="/StaffSearchAction"/>" method="post">
 	<table border="1" style="width:70%">
 		<tr>
@@ -49,7 +49,6 @@
 			<td colspan="6" align="center">
 				<input type="submit" value="조회">
 			</td>
-			
 		</tr>
 	</table>
 </form>

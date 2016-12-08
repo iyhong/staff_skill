@@ -16,12 +16,6 @@ public class Staff {
 		super();
 	}
 	
-	
-	
-	
-
-
-
 	public Staff(int no, String name, String sn, String graduateday, School school, Religion religion,
 			ArrayList<Skill> skillList) {
 		super();
@@ -33,11 +27,6 @@ public class Staff {
 		this.religion = religion;
 		this.skillList = skillList;
 	}
-
-
-
-
-
 
 
 	public int getNo() {
