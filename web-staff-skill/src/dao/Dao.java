@@ -132,9 +132,61 @@ public class Dao {
 		}finally{
 			close();
 		}
-		
 		return rowCount;
-		
+	}
+	
+	//한명의 회원정보 가져오기
+	public static Staff oneStaff(Staff staff){
+		System.out.println("Dao.java oneStaff() 진입");
+		String sql = "select st.`no`,st.name, st.sn, re.name as religionno , sc.graduate as schoolno,graduateday from staff st inner join religion re on st.religionno = re.`no` inner join school sc on st.schoolno = sc.`no` where st.`no`=? order by st.name asc";
+		PreparedStatement skillPstmt;
+		ResultSet skillRs;
+		ArrayList<Skill> skillList = null;
+		try{
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, staff.getNo());
+			rs = pstmt.executeQuery();
+			while(rs.next()){
+				System.out.println(staff);
+				staff.setName(rs.getString("name"));
+				
+				//주민번호 자른 숫자가져와서 담고 2로나누어 떨이지면 '여' 안떨어지면'남'을 셋팅
+				staff.setSn(rs.getString("sn"));
+				
+				staff.setGraduateday(rs.getString("graduateday"));
+				School school = new School();
+				school.setGraduate(rs.getString("schoolno"));;
+				staff.setSchool(school);
+				Religion religion = new Religion();
+				religion.setName(rs.getString("religionno"));
+				staff.setReligion(religion);
+				
+				//skill 가져오는 쿼리문
+				//skill 이 한 staff 마다 여러개 이므로 ArrayList에 담아 담은참조값을 staff에 담는다.
+				skillPstmt = conn.prepareStatement("select  staffskill.staffno , staffskill.skillno, skill.name from staffskill inner join skill on staffskill.skillno = skill.`no`  where staffskill.staffno=? ; ");
+				skillPstmt.setInt(1, rs.getInt("no"));	//현재 staff의 no 값으로 skill 테이블과 staffskill 테이블을 조인해 가져온다
+				skillRs = skillPstmt.executeQuery();
+				skillList = new ArrayList<Skill>();
+				
+				//skill 에 결과값을 하나씩 넣고 그것들을 ArrayList에 담는다.
+				while(skillRs.next()){
+					Skill skill = new Skill();
+					skill.setName(skillRs.getString("name"));
+					skillList.add(skill);
+				}
+				
+				//담은 ArrayList 를 staff 에 담음
+				staff.setSkillList(skillList);
+				System.out.println(staff);
+			}
+			System.out.println("회원 한명 정보 가져옴");
+		} catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			close();
+		}
+		return staff;
 	}
 	
 	//전체 staff 가져오기 와서 controller 로 넘겨주는 메서드
@@ -163,6 +215,28 @@ public class Dao {
 				noList.add(rs.getInt(1));
 			}
 			System.out.println("allSelect의 noList : "+noList);
+		} catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			close();
+		}
+		return noList;
+	}
+	
+	//이름에 따른 회원 no 가져오기 
+	private static ArrayList<Integer> nameSelect(String name){
+		System.out.println("->nameSelect() 진입");
+		ArrayList<Integer> noList = null;
+		
+		try{
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement("select no, name from staff where name like '%"+name+"%'");
+			System.out.println("");
+			rs = pstmt.executeQuery();
+			noList = new ArrayList<Integer>();
+			while(rs.next()){
+				noList.add(rs.getInt(1));
+			}
 		} catch(Exception e){
 			e.printStackTrace();
 		}finally{
@@ -279,27 +353,7 @@ public class Dao {
 		return noList;
 	}
 	
-	//이름에 따른 회원 no 가져오기 
-	private static ArrayList<Integer> nameSelect(String name){
-		System.out.println("->nameSelect() 진입");
-		ArrayList<Integer> noList = null;
-		
-		try{
-			conn = DBUtil.getConnection();
-			pstmt = conn.prepareStatement("select no, name from staff where name like '%"+name+"%'");
-			System.out.println("");
-			rs = pstmt.executeQuery();
-			noList = new ArrayList<Integer>();
-			while(rs.next()){
-				noList.add(rs.getInt(1));
-			}
-		} catch(Exception e){
-			e.printStackTrace();
-		}finally{
-			close();
-		}
-		return noList;
-	}
+	
 	//졸업일에 따른 회원 no 가져오기 
 	private static ArrayList<Integer> graduateSelect(String graduateDayStart, String graduateDayEnd){
 		System.out.println("->graduateSelect() 진입");
@@ -346,12 +400,7 @@ public class Dao {
 			System.out.println("searchStaff()의 조건문All noList : "+noList);
 		}
 		
-		//뭔가 하나라도 선택해서 
-		/*if(search.getName()!=""||search.getGender()!=null||search.getReligionNo()!=0
-				||search.getSchoolNo()!=null||search.getSkillNo()!=null
-				||search.getGraduateDayStart()!=""||search.getGraduateDayEnd()!=""){
-		}*/
-		
+				
 		//성별 확인
 		if(search.getGender()!=null){
 			System.out.println("gender 확인 분기문");
@@ -449,6 +498,7 @@ public class Dao {
 				while(rs.next()){
 					staff = new Staff();
 					System.out.println(staff);
+					staff.setNo(rs.getInt("no"));
 					staff.setName(rs.getString("name"));
 					
 					//주민번호 자른 숫자가져와서 담고 2로나누어 떨이지면 '여' 안떨어지면'남'을 셋팅
