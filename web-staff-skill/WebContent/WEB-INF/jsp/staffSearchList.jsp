@@ -33,8 +33,9 @@
 						</c:forEach>
 					</td>
 					<td>${staff.graduateday}</td>
-					<td>수정</td>
-					<td>삭제</td>
+					
+					<td><a href="<c:url value="/StaffUpdateAction"/>">수정</a></td>
+					<td><a href="<c:url value="/StaffDeleteAction"/>">삭제</a></td>
 				</tr>
 			</c:forEach>
 			
