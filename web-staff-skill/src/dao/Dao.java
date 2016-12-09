@@ -271,7 +271,6 @@ public class Dao {
 			while(rs.next()){
 				noList.add(rs.getInt(1));
 			}
-			//중복값제거 
 		} catch(Exception e){
 			e.printStackTrace();
 		}finally{
@@ -279,6 +278,29 @@ public class Dao {
 		}
 		return noList;
 	}
+	
+	//이름에 따른 회원 no 가져오기 
+	private static ArrayList<Integer> nameSelect(String name){
+		System.out.println("->nameSelect() 진입");
+		ArrayList<Integer> noList = null;
+		
+		try{
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement("select no from staff like '%?%'");
+			System.out.println("");
+			rs = pstmt.executeQuery();
+			noList = new ArrayList<Integer>();
+			while(rs.next()){
+				noList.add(rs.getInt(1));
+			}
+		} catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			close();
+		}
+		return noList;
+	}
+	
 	
 	//조회 결과에 따른 staff 가져오기
 	public static ArrayList<Staff> searchStaff(Search search){
