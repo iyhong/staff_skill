@@ -150,6 +150,7 @@ public class Dao {
 	
 	//전체 회원의 no 가져오기
 	private static ArrayList<Integer> allSelect(){
+		System.out.println("allSelect() 진입");
 		try{
 			conn = DBUtil.getConnection();
 			pstmt = conn.prepareStatement("select no from staff");
@@ -158,6 +159,7 @@ public class Dao {
 			while(rs.next()){
 				noList.add(rs.getInt(1));
 			}
+			System.out.println("allSelect의 noList : "+noList);
 		} catch(Exception e){
 			e.printStackTrace();
 		}finally{
@@ -168,6 +170,7 @@ public class Dao {
 	
 	//성별에 따른 회원 no 가져오기
 	private static ArrayList<Integer> genderSelect(String[] gender){
+		System.out.println("genderSelect() 진입");
 		int genderNo = 0;
 		String sqlAdd = "";
 		if(gender.length==1){
@@ -200,8 +203,15 @@ public class Dao {
 	public static ArrayList<Staff> searchStaff(Search search){
 		System.out.println("Dao.java searchStaff() 진입");
 		ArrayList<Staff> staffList = null;
-		String sql = "select st.`no`, st.name,substring(sn, 8,1)as sn,re.name as religionno , sc.graduate as schoolno,graduateday from staff st inner join religion re on st.religionno = re.`no` inner join school sc on st.schoolno = sc.`no` where st.`no`='?' order by st.name asc;";
-		noList = new ArrayList<Integer>();
+		String sql = "select st.`no`, st.name,substring(sn, 8,1)as sn,re.name as religionno , sc.graduate as schoolno,graduateday from staff st inner join religion re on st.religionno = re.`no` inner join school sc on st.schoolno = sc.`no` where st.`no`=? order by st.name asc;";
+		
+		if(search.getName()==""&&search.getGender()==null&&search.getReligionNo()==0
+				&&search.getSchoolNo()==null&&search.getSkillNo()==null
+				&&search.getGraduateDayStart()==""&&search.getGraduateDayEnd()==""){
+			System.out.println("아무것도 입력안했을때...");
+			noList = allSelect();
+			System.out.println("searchStaff()의 조건문1 noList : "+noList);
+		}
 		//뭔가 하나라도 선택해서 값을 받았으면 where 단어를 추가해준다
 		if(search.getName()!=""||search.getGender()!=null||search.getReligionNo()!=0
 				||search.getSchoolNo()!=null||search.getSkillNo()!=null
@@ -212,6 +222,7 @@ public class Dao {
 		if(search.getGender()!=null){
 			System.out.println("gnder 확인 분기문");
 			noList = genderSelect(search.getGender());
+			System.out.print(noList);
 		}
 		
 		//종교 확인
@@ -225,8 +236,6 @@ public class Dao {
 			System.out.println("school 확인 분기문");
 			int[] schoolList = search.getSchoolNo();
 		}
-		
-		ArrayList<Integer> noList = null;
 		
 		staffList = getList(sql,noList);
 	
@@ -307,11 +316,13 @@ public class Dao {
 		
 		try{
 			conn = DBUtil.getConnection();
+			System.out.println("noList : "+noList);
+			staffList = new ArrayList<Staff>();
 			for(int i = 0;i<noList.size();i++){
+				System.out.println("sql"+sql);
 				pstmt = conn.prepareStatement(sql);
 				pstmt.setInt(1, noList.get(i));
 				rs = pstmt.executeQuery();
-				staffList = new ArrayList<Staff>();
 				while(rs.next()){
 					staff = new Staff();
 					System.out.println(staff);
@@ -352,8 +363,8 @@ public class Dao {
 					staffList.add(staff);
 					System.out.println(staff);
 				}
-				System.out.println("전체리스트 가져옴");
 			}
+			System.out.println("전체리스트 가져옴");
 		} catch(Exception e){
 			e.printStackTrace();
 		}finally{
