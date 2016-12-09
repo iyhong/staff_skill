@@ -286,7 +286,7 @@ public class Dao {
 		
 		try{
 			conn = DBUtil.getConnection();
-			pstmt = conn.prepareStatement("select no from staff like '%?%'");
+			pstmt = conn.prepareStatement("select no, name from staff where name like '%"+name+"%'");
 			System.out.println("");
 			rs = pstmt.executeQuery();
 			noList = new ArrayList<Integer>();
@@ -300,7 +300,35 @@ public class Dao {
 		}
 		return noList;
 	}
-	
+	//졸업일에 따른 회원 no 가져오기 
+	private static ArrayList<Integer> graduateSelect(String graduateDayStart, String graduateDayEnd){
+		System.out.println("->graduateSelect() 진입");
+		ArrayList<Integer> noList = null;
+		String sqlAdd = "";
+		//졸업일찾을때 앞에입력안하고 뒤만하면
+		if(!graduateDayStart.equals("")&&!graduateDayEnd.equals("")){
+			sqlAdd += "where graduateday between '"+graduateDayStart+"' and '"+graduateDayEnd+"'";
+		}else if(!graduateDayStart.equals("")){
+			sqlAdd += "where graduateday > '"+graduateDayStart+"'";
+		}else{
+			sqlAdd += "where graduateday < '"+graduateDayEnd+"'";
+		}
+		try{
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement("select no, name, graduateday from staff "+sqlAdd);
+			System.out.println("");
+			rs = pstmt.executeQuery();
+			noList = new ArrayList<Integer>();
+			while(rs.next()){
+				noList.add(rs.getInt(1));
+			}
+		} catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			close();
+		}
+		return noList;
+	}
 	
 	//조회 결과에 따른 staff 가져오기
 	public static ArrayList<Staff> searchStaff(Search search){
@@ -370,6 +398,28 @@ public class Dao {
 			System.out.println("searchStaff()의 조건문 noList : "+noList);
 		}
 		
+		//이름 확인
+		if(search.getName()!=null){
+			System.out.println("name 확인 분기문");
+			ArrayList<Integer> noListName = nameSelect(search.getName());
+			System.out.println("searchStaff()의 조건문 noList : "+noList);
+			System.out.println("searchStaff()의 조건문 noListName : "+noListName);
+			//noList.addAll(noListReligion);
+			noList = duplicationValue(noList, noListName);
+			System.out.println("searchStaff()의 조건문 noList : "+noList);
+		}
+		
+		//졸업일 확인
+		if(search.getGraduateDayStart()!=""||search.getGraduateDayEnd()!=""){
+			System.out.println("graduateDay 확인 분기문");
+			ArrayList<Integer> noListGraduate = graduateSelect(search.getGraduateDayStart(),search.getGraduateDayEnd());
+			System.out.println("searchStaff()의 조건문 noList : "+noList);
+			System.out.println("searchStaff()의 조건문 noListGraduate : "+noListGraduate);
+			//noList.addAll(noListReligion);
+			noList = duplicationValue(noList, noListGraduate);
+			System.out.println("searchStaff()의 조건문 noList : "+noList);
+		}
+		
 		
 		System.out.println("searchStaff()의 최종 noList : "+noList);
 		staffList = getList(sql,noList);
@@ -402,7 +452,7 @@ public class Dao {
 					staff.setName(rs.getString("name"));
 					
 					//주민번호 자른 숫자가져와서 담고 2로나누어 떨이지면 '여' 안떨어지면'남'을 셋팅
-					int genderNum = Integer.parseInt(rs.getString("sn"));
+					int genderNum = rs.getInt("sn");
 					if(genderNum%2!=0){
 						staff.setSn("남");
 					}else{
