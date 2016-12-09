@@ -152,7 +152,7 @@ public class Dao {
 	
 	//전체 회원의 no 가져오기
 	private static ArrayList<Integer> allSelect(){
-		System.out.println("allSelect() 진입");
+		System.out.println("->allSelect() 진입");
 		ArrayList<Integer> noList = null;
 		try{
 			conn = DBUtil.getConnection();
@@ -173,7 +173,7 @@ public class Dao {
 	
 	//성별에 따른 회원 no 가져오기
 	private static ArrayList<Integer> genderSelect(String[] gender){
-		System.out.println("genderSelect() 진입");
+		System.out.println("->genderSelect() 진입");
 		ArrayList<Integer> noList = null;
 		String sqlAdd = "";
 		if(gender.length==1){
@@ -203,12 +203,41 @@ public class Dao {
 	
 	//종교에 따른 회원 no 가져오기
 	private static ArrayList<Integer> religionSelect(int religionNo){
-		System.out.println("religionSelect() 진입");
+		System.out.println("->religionSelect() 진입");
 		ArrayList<Integer> noList = null;
 		try{
 			conn = DBUtil.getConnection();
 			pstmt = conn.prepareStatement("select no from staff where religionno=?");
 			pstmt.setInt(1, religionNo);
+			rs = pstmt.executeQuery();
+			noList = new ArrayList<Integer>();
+			while(rs.next()){
+				noList.add(rs.getInt(1));
+			}
+		} catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			close();
+		}
+		return noList;
+	}
+	
+	//학력에 따른 회원 no 가져오기
+	private static ArrayList<Integer> schoolSelect(int[] schoolNo){
+		System.out.println("->schoolSelect() 진입");
+		ArrayList<Integer> noList = null;
+		String sqlAdd = "where ";
+		
+		for(int i=0;i<schoolNo.length;i++){
+			sqlAdd += "schoolno="+schoolNo[i];
+			if(i!=schoolNo.length-1){
+				sqlAdd += " or ";
+			}
+		}
+		try{
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement("select no from staff "+sqlAdd);
+			System.out.println("schoolno 쿼리문 : select no from staff "+sqlAdd);
 			rs = pstmt.executeQuery();
 			noList = new ArrayList<Integer>();
 			while(rs.next()){
@@ -238,16 +267,17 @@ public class Dao {
 			System.out.println("searchStaff()의 조건문All noList : "+noList);
 		}
 		
-		//뭔가 하나라도 선택해서 값을 받았으면 where 단어를 추가해준다
-		if(search.getName()!=""||search.getGender()!=null||search.getReligionNo()!=0
+		//뭔가 하나라도 선택해서 
+		/*if(search.getName()!=""||search.getGender()!=null||search.getReligionNo()!=0
 				||search.getSchoolNo()!=null||search.getSkillNo()!=null
 				||search.getGraduateDayStart()!=""||search.getGraduateDayEnd()!=""){
-		}
+		}*/
 		
 		//성별 확인
 		if(search.getGender()!=null){
 			System.out.println("gender 확인 분기문");
 			ArrayList<Integer> noListGender = genderSelect(search.getGender());
+			System.out.println("searchStaff()의 조건문 noList : "+noList);
 			System.out.println("searchStaff()의 조건문 noListGender : "+noListGender);
 			//noList.addAll(noListGender);
 			noList = duplicationValue(noList, noListGender);
@@ -270,21 +300,21 @@ public class Dao {
 		//학력 확인
 		if(search.getSchoolNo()!=null){
 			System.out.println("school 확인 분기문");
-			int[] schoolList = search.getSchoolNo();
+			ArrayList<Integer> noListSchool = schoolSelect(search.getSchoolNo());
+			System.out.println("searchStaff()의 조건문 noList : "+noList);
+			System.out.println("searchStaff()의 조건문 noListSchool : "+noListSchool);
+			//noList.addAll(noListReligion);
+			noList = duplicationValue(noList, noListSchool);
+			System.out.println("searchStaff()의 조건문 noList : "+noList);
 		}
 		
-		System.out.println("searchStaff()의 최종 noList : "+noList);
-		// HashSet 데이터 형태로 생성되면서 중복 제거됨
-		HashSet<Integer> hs = new HashSet<Integer>(noList);
-		// ArrayList 형태로 다시 생성
-		ArrayList<Integer> noListResult = new ArrayList<Integer>(hs);
 		
-		System.out.println("searchStaff()의 중복제거 noListResult : "+noListResult);
-		staffList = getList(sql,noListResult);
+		
+		System.out.println("searchStaff()의 최종 noList : "+noList);
+		staffList = getList(sql,noList);
 	
 		return staffList;
 	}
-	
 	
 	
 	//noList 받아서 리스트 가져와주는 메서드
@@ -300,8 +330,8 @@ public class Dao {
 			conn = DBUtil.getConnection();
 			System.out.println("noList : "+noList);
 			staffList = new ArrayList<Staff>();
+			System.out.println("sql : "+sql);
 			for(int i = 0;i<noList.size();i++){
-				System.out.println("sql"+sql);
 				pstmt = conn.prepareStatement(sql);
 				pstmt.setInt(1, noList.get(i));
 				rs = pstmt.executeQuery();
