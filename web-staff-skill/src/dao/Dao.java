@@ -250,16 +250,21 @@ public class Dao {
 			ArrayList<Integer> noListGender = genderSelect(search.getGender());
 			System.out.println("searchStaff()의 조건문 noListGender : "+noListGender);
 			//noList.addAll(noListGender);
-			noList.addAll(duplicationValue(noList, noListGender));
+			noList = duplicationValue(noList, noListGender);
+			System.out.println("searchStaff()의 조건문 noList : "+noList);
+
 		}
 		
 		//종교 확인
 		if(search.getReligionNo()!=0){
 			System.out.println("religion 확인 분기문");
 			ArrayList<Integer> noListReligion = religionSelect(search.getReligionNo());
+			System.out.println("searchStaff()의 조건문 noList : "+noList);
 			System.out.println("searchStaff()의 조건문 noListReligion : "+noListReligion);
 			//noList.addAll(noListReligion);
-			noList.addAll(duplicationValue(noList, noListReligion));
+			noList = duplicationValue(noList, noListReligion);
+			System.out.println("searchStaff()의 조건문 noList : "+noList);
+
 		}
 		
 		//학력 확인
