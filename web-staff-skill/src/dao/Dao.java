@@ -251,6 +251,35 @@ public class Dao {
 		return noList;
 	}
 	
+	//스킬에따른 회원 no 가져오기
+	private static ArrayList<Integer> skillSelect(int[] skillNo){
+		System.out.println("->skillSelect() 진입");
+		ArrayList<Integer> noList = null;
+		String sqlAdd = "where ";
+		for(int i=0;i<skillNo.length;i++){
+			sqlAdd += "staffskill.skillno='"+skillNo[i]+"'";
+			if(i!=skillNo.length-1){
+				sqlAdd += " or ";
+			}
+		}
+		try{
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement("select DISTINCT staff.`no` from staff inner join staffskill on staff.`no` = staffskill.staffno "+sqlAdd);
+			System.out.println("select DISTINCT staff.`no` from staff inner join staffskill on staff.`no` = staffskill.staffno "+sqlAdd);
+			rs = pstmt.executeQuery();
+			noList = new ArrayList<Integer>();
+			while(rs.next()){
+				noList.add(rs.getInt(1));
+			}
+			//중복값제거 
+		} catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			close();
+		}
+		return noList;
+	}
+	
 	//조회 결과에 따른 staff 가져오기
 	public static ArrayList<Staff> searchStaff(Search search){
 		System.out.println("Dao.java searchStaff() 진입");
@@ -308,6 +337,16 @@ public class Dao {
 			System.out.println("searchStaff()의 조건문 noList : "+noList);
 		}
 		
+		//스킬 확인
+		if(search.getSkillNo()!=null){
+			System.out.println("skill 확인 분기문");
+			ArrayList<Integer> noListSkill = skillSelect(search.getSkillNo());
+			System.out.println("searchStaff()의 조건문 noList : "+noList);
+			System.out.println("searchStaff()의 조건문 noListSkill : "+noListSkill);
+			//noList.addAll(noListReligion);
+			noList = duplicationValue(noList, noListSkill);
+			System.out.println("searchStaff()의 조건문 noList : "+noList);
+		}
 		
 		
 		System.out.println("searchStaff()의 최종 noList : "+noList);
