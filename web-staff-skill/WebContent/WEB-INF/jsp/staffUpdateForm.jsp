@@ -9,18 +9,18 @@
 <body>
 	<h1>Staff Updated Form</h1>
 	
-	<form action="<c:url value="/StaffInsertAction"/>" method="post">
+	<form action="<c:url value="/StaffUpdateAction"/>" method="post">
 	<table border="1" style="width:70%">
 		<tr>
 			<td>이름</td>
 			<td><input type="text" name="name" value="${staff.name}"></td>
 			<td>주민번호</td>
-			<td><input type="text" name="sn1" size="10px" vaue="${staff.sn}">-<input type="password" name="sn2" size="10px"></td>
+			<td><input type="text" name="sn1" size="10px" value="${sn1}">-<input type="password" name="sn2" size="10px" value="${sn2}"></td>
 			<td>종교</td>
 			<td>
 				<select name="religionNo">
 					<c:forEach items="${religionList}" var="re">
-						<option value="${re.no}" >${re.name}</option>
+						<option value="${re.no}" <c:if test="${re.name==staff.religion.name}">selected</c:if>>${re.name}</option>
 					</c:forEach>
 				</select>
 			</td>
@@ -29,25 +29,25 @@
 			<td>학력</td>
 			<td>
 				<c:forEach items="${schoolList}" var="sc">
-					<input type="radio" name="schoolNo" value="${sc.no}">${sc.graduate}
+					<input type="radio" name="schoolNo" value="${sc.no}" <c:if test="${sc.graduate==staff.school.graduate}">checked</c:if>>${sc.graduate}
 				</c:forEach>
 			</td>
 			<td>기술</td>
 			<td colspan="3">
-				<c:forEach items="${skillList}" var="sk">
-					<input type="checkbox" name="skillNo" value="${sk.no}">${sk.name}
+				<c:forEach items="${skillList}" var="sk" varStatus="status">
+					<input type="checkbox" name="skillNo" value="${sk.no}" <c:if test="${sk.name==staff.skillList[status.index].name}">checked</c:if>>${sk.name}
 				</c:forEach>
 			</td>
 		</tr>
 		<tr>
 			<td>졸업일</td>
 			<td colspan="5">
-				<input type="date" name="graduateDay">			
+				<input type="date" name="graduateDay" value="${staff.graduateday}">			
 			</td>
 		</tr>
 		<tr>
 			<td colspan="6" align="center">
-				<input type="submit" value="등록">
+				<input type="submit" value="수정">
 				<input type="reset" value="초기화">
 			</td>
 			
@@ -55,6 +55,11 @@
 		
 	</table>
 </form>
+	
+	<c:forEach items="${staff.skillList}" var="skillList" varStatus="status">
+		${skillList.name}
+		${status.index}
+	</c:forEach>
 	
 </body>
 </html>

@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import dao.Dao;
+import dto.Religion;
+import dto.School;
+import dto.Skill;
 import dto.Staff;
 
 @WebServlet("/StaffUpdateAction")
@@ -28,6 +31,13 @@ public class StaffUpdateAction extends HttpServlet {
 		System.out.println("sn1 : "+sn1);
 		System.out.println("sn2 : "+sn2);
 		
+		ArrayList<Religion> religionList = Dao.selectReligion();
+		ArrayList<School> schoolList = Dao.selectSchool();
+		ArrayList<Skill> skillList = Dao.selectSkill();
+		
+		request.setAttribute("skillList", skillList);
+		request.setAttribute("schoolList", schoolList);
+		request.setAttribute("religionList", religionList);
 		request.setAttribute("staff", staff);
 		request.setAttribute("sn1", sn1);
 		request.setAttribute("sn2", sn2);
@@ -35,7 +45,7 @@ public class StaffUpdateAction extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+		
 	}
 
 }
