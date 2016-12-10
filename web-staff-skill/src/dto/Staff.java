@@ -64,24 +64,17 @@ public class Staff {
 	public void setReligion(Religion religion) {
 		this.religion = religion;
 	}
-	
-	
 	public ArrayList<Skill> getSkillList() {
 		return skillList;
 	}
-
 	public void setSkillList(ArrayList<Skill> skillList) {
 		this.skillList = skillList;
 	}
-
 
 	@Override
 	public String toString() {
 		return "Staff [no=" + no + ", name=" + name + ", sn=" + sn + ", graduateday=" + graduateday + ", school="
 				+ school + ", religion=" + religion + ", skillList=" + skillList + "]";
 	}
-
-
-	
 	
 }

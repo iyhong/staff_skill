@@ -18,9 +18,7 @@ public class Dao {
 	static PreparedStatement pstmt;
 	static ResultSet rs;
 	
-
-	
-	//모든 기술 가져오기
+	//모든 기술 가져오기 (controller 에서 호출하는 메서드)
 	public static ArrayList<Skill> selectSkill(){
 		Skill skill = null;
 		ArrayList<Skill> skillList = null;
@@ -43,7 +41,7 @@ public class Dao {
 		return skillList;
 	}
 	
-	//모든 학력정보 가져오기
+	//모든 학력정보 가져오기 (controller 에서 호출하는 메서드)
 	public static ArrayList<School> selectSchool(){
 		School school = null;
 		ArrayList<School> schoolList = null;
@@ -66,7 +64,7 @@ public class Dao {
 		return schoolList;
 	}
 	
-	//모든 종교정보 가져오기
+	//모든 종교정보 가져오기 (controller 에서 호출하는 메서드)
 	public static ArrayList<Religion> selectReligion(){
 		Religion religion = null;
 		ArrayList<Religion> religionlList = null;
@@ -89,7 +87,7 @@ public class Dao {
 		return religionlList;
 	}
 	
-	//회원정보 입력하기 
+	//회원정보 입력하기  (controller 에서 호출하는 메서드)
 	public static int insertStaff(Staff staff, int[] skillNo){
 		int rowCount = 0;
 		System.out.println("insertStaff() Dao.java");
@@ -135,7 +133,7 @@ public class Dao {
 		return rowCount;
 	}
 	
-	//한명의 회원정보 가져오기
+	//한명의 회원정보 가져오기 (controller 에서 호출하는 메서드)
 	public static Staff oneStaff(Staff staff){
 		System.out.println("Dao.java oneStaff() 진입");
 		String sql = "select st.`no`,st.name, st.sn, re.name as religionno , sc.graduate as schoolno,graduateday from staff st inner join religion re on st.religionno = re.`no` inner join school sc on st.schoolno = sc.`no` where st.`no`=? order by st.name asc";
@@ -189,7 +187,7 @@ public class Dao {
 		return staff;
 	}
 	
-	//전체 staff 가져오기 와서 controller 로 넘겨주는 메서드
+	//전체 staff 가져 오기 (controller 에서 호출하는 메서드)
 	public static ArrayList<Staff> allStaff(){
 		System.out.println("Dao.java allStaff() 진입");
 		ArrayList<Integer> noList = null;
@@ -199,6 +197,170 @@ public class Dao {
 		noList = allSelect();
 		staffList = getList(sql,noList);
 		
+		return staffList;
+	}
+	
+	
+	//조회 결과에 따른 staff 가져오기(controller 에서 호출하는 메서드)
+	public static ArrayList<Staff> searchStaff(Search search){
+		System.out.println("Dao.java searchStaff() 진입");
+		ArrayList<Integer> noList = new ArrayList<Integer>();
+		ArrayList<Staff> staffList = null;
+		String sql = "select st.`no`, st.name,substring(sn, 8,1)as sn,re.name as religionno , sc.graduate as schoolno,graduateday from staff st inner join religion re on st.religionno = re.`no` inner join school sc on st.schoolno = sc.`no` where st.`no`=? order by st.name asc;";
+		
+		System.out.println("searchStaff의 초기 noList : "+noList);
+		if(search.getName()==""&&search.getGender()==null&&search.getReligionNo()==0
+				&&search.getSchoolNo()==null&&search.getSkillNo()==null
+				&&search.getGraduateDayStart()==""&&search.getGraduateDayEnd()==""){
+			System.out.println("아무것도 입력안했을때...");
+			noList = allSelect();
+			System.out.println("searchStaff()의 조건문All noList : "+noList);
+		}
+		
+				
+		//성별 확인
+		if(search.getGender()!=null){
+			System.out.println("gender 확인 분기문");
+			ArrayList<Integer> noListGender = genderSelect(search.getGender());
+			System.out.println("searchStaff()의 조건문 noList : "+noList);
+			System.out.println("searchStaff()의 조건문 noListGender : "+noListGender);
+			//noList.addAll(noListGender);
+			noList = duplicationValue(noList, noListGender);
+			System.out.println("searchStaff()의 조건문 noList : "+noList);
+
+		}
+		
+		//종교 확인
+		if(search.getReligionNo()!=0){
+			System.out.println("religion 확인 분기문");
+			ArrayList<Integer> noListReligion = religionSelect(search.getReligionNo());
+			System.out.println("searchStaff()의 조건문 noList : "+noList);
+			System.out.println("searchStaff()의 조건문 noListReligion : "+noListReligion);
+			//noList.addAll(noListReligion);
+			noList = duplicationValue(noList, noListReligion);
+			System.out.println("searchStaff()의 조건문 noList : "+noList);
+
+		}
+		
+		//학력 확인
+		if(search.getSchoolNo()!=null){
+			System.out.println("school 확인 분기문");
+			ArrayList<Integer> noListSchool = schoolSelect(search.getSchoolNo());
+			System.out.println("searchStaff()의 조건문 noList : "+noList);
+			System.out.println("searchStaff()의 조건문 noListSchool : "+noListSchool);
+			//noList.addAll(noListReligion);
+			noList = duplicationValue(noList, noListSchool);
+			System.out.println("searchStaff()의 조건문 noList : "+noList);
+		}
+		
+		//스킬 확인
+		if(search.getSkillNo()!=null){
+			System.out.println("skill 확인 분기문");
+			ArrayList<Integer> noListSkill = skillSelect(search.getSkillNo());
+			System.out.println("searchStaff()의 조건문 noList : "+noList);
+			System.out.println("searchStaff()의 조건문 noListSkill : "+noListSkill);
+			//noList.addAll(noListReligion);
+			noList = duplicationValue(noList, noListSkill);
+			System.out.println("searchStaff()의 조건문 noList : "+noList);
+		}
+		
+		//이름 확인
+		if(search.getName()!=null){
+			System.out.println("name 확인 분기문");
+			ArrayList<Integer> noListName = nameSelect(search.getName());
+			System.out.println("searchStaff()의 조건문 noList : "+noList);
+			System.out.println("searchStaff()의 조건문 noListName : "+noListName);
+			//noList.addAll(noListReligion);
+			noList = duplicationValue(noList, noListName);
+			System.out.println("searchStaff()의 조건문 noList : "+noList);
+		}
+		
+		//졸업일 확인
+		if(search.getGraduateDayStart()!=""||search.getGraduateDayEnd()!=""){
+			System.out.println("graduateDay 확인 분기문");
+			ArrayList<Integer> noListGraduate = graduateSelect(search.getGraduateDayStart(),search.getGraduateDayEnd());
+			System.out.println("searchStaff()의 조건문 noList : "+noList);
+			System.out.println("searchStaff()의 조건문 noListGraduate : "+noListGraduate);
+			//noList.addAll(noListReligion);
+			noList = duplicationValue(noList, noListGraduate);
+			System.out.println("searchStaff()의 조건문 noList : "+noList);
+		}
+		
+		
+		System.out.println("searchStaff()의 최종 noList : "+noList);
+		staffList = getList(sql,noList);
+	
+		return staffList;
+	}
+	
+	
+	//noList 받아서 리스트 가져와주는 메서드
+	private static ArrayList<Staff> getList(String sql, ArrayList<Integer> noList){
+		System.out.println("---Dao.java getList() 진입---");
+		Staff staff;
+		ArrayList<Staff> staffList = null;
+		PreparedStatement skillPstmt;
+		ResultSet skillRs;
+		ArrayList<Skill> skillList = null;
+		
+		try{
+			conn = DBUtil.getConnection();
+			System.out.println("noList : "+noList);
+			staffList = new ArrayList<Staff>();
+			System.out.println("sql : "+sql);
+			for(int i = 0;i<noList.size();i++){
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, noList.get(i));
+				rs = pstmt.executeQuery();
+				while(rs.next()){
+					staff = new Staff();
+					System.out.println(staff);
+					staff.setNo(rs.getInt("no"));
+					staff.setName(rs.getString("name"));
+					
+					//주민번호 자른 숫자가져와서 담고 2로나누어 떨이지면 '여' 안떨어지면'남'을 셋팅
+					int genderNum = rs.getInt("sn");
+					if(genderNum%2!=0){
+						staff.setSn("남");
+					}else{
+						staff.setSn("여");
+					}
+					
+					staff.setGraduateday(rs.getString("graduateday"));
+					School school = new School();
+					school.setGraduate(rs.getString("schoolno"));;
+					staff.setSchool(school);
+					Religion religion = new Religion();
+					religion.setName(rs.getString("religionno"));
+					staff.setReligion(religion);
+					
+					//skill 가져오는 쿼리문
+					//skill 이 한 staff 마다 여러개 이므로 ArrayList에 담아 담은참조값을 staff에 담는다.
+					skillPstmt = conn.prepareStatement("select  staffskill.staffno , staffskill.skillno, skill.name from staffskill inner join skill on staffskill.skillno = skill.`no`  where staffskill.staffno=? ; ");
+					skillPstmt.setInt(1, rs.getInt("no"));	//현재 staff의 no 값으로 skill 테이블과 staffskill 테이블을 조인해 가져온다
+					skillRs = skillPstmt.executeQuery();
+					skillList = new ArrayList<Skill>();
+					
+					//skill 에 결과값을 하나씩 넣고 그것들을 ArrayList에 담는다.
+					while(skillRs.next()){
+						Skill skill = new Skill();
+						skill.setNo(skillRs.getInt("skillno"));
+						skill.setName(skillRs.getString("name"));
+						skillList.add(skill);
+					}
+					
+					//담은 ArrayList 를 staff 에 담음
+					staff.setSkillList(skillList);
+					staffList.add(staff);
+					System.out.println(staff);
+				}
+			}
+			System.out.println("전체리스트 가져옴");
+		} catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			close();
+		}
 		return staffList;
 	}
 	
@@ -222,7 +384,7 @@ public class Dao {
 		}
 		return noList;
 	}
-	
+		
 	//이름에 따른 회원 no 가져오기 
 	private static ArrayList<Integer> nameSelect(String name){
 		System.out.println("->nameSelect() 진입");
@@ -383,168 +545,7 @@ public class Dao {
 		}
 		return noList;
 	}
-	
-	//조회 결과에 따른 staff 가져오기
-	public static ArrayList<Staff> searchStaff(Search search){
-		System.out.println("Dao.java searchStaff() 진입");
-		ArrayList<Integer> noList = new ArrayList<Integer>();
-		ArrayList<Staff> staffList = null;
-		String sql = "select st.`no`, st.name,substring(sn, 8,1)as sn,re.name as religionno , sc.graduate as schoolno,graduateday from staff st inner join religion re on st.religionno = re.`no` inner join school sc on st.schoolno = sc.`no` where st.`no`=? order by st.name asc;";
 		
-		System.out.println("searchStaff의 초기 noList : "+noList);
-		if(search.getName()==""&&search.getGender()==null&&search.getReligionNo()==0
-				&&search.getSchoolNo()==null&&search.getSkillNo()==null
-				&&search.getGraduateDayStart()==""&&search.getGraduateDayEnd()==""){
-			System.out.println("아무것도 입력안했을때...");
-			noList = allSelect();
-			System.out.println("searchStaff()의 조건문All noList : "+noList);
-		}
-		
-				
-		//성별 확인
-		if(search.getGender()!=null){
-			System.out.println("gender 확인 분기문");
-			ArrayList<Integer> noListGender = genderSelect(search.getGender());
-			System.out.println("searchStaff()의 조건문 noList : "+noList);
-			System.out.println("searchStaff()의 조건문 noListGender : "+noListGender);
-			//noList.addAll(noListGender);
-			noList = duplicationValue(noList, noListGender);
-			System.out.println("searchStaff()의 조건문 noList : "+noList);
-
-		}
-		
-		//종교 확인
-		if(search.getReligionNo()!=0){
-			System.out.println("religion 확인 분기문");
-			ArrayList<Integer> noListReligion = religionSelect(search.getReligionNo());
-			System.out.println("searchStaff()의 조건문 noList : "+noList);
-			System.out.println("searchStaff()의 조건문 noListReligion : "+noListReligion);
-			//noList.addAll(noListReligion);
-			noList = duplicationValue(noList, noListReligion);
-			System.out.println("searchStaff()의 조건문 noList : "+noList);
-
-		}
-		
-		//학력 확인
-		if(search.getSchoolNo()!=null){
-			System.out.println("school 확인 분기문");
-			ArrayList<Integer> noListSchool = schoolSelect(search.getSchoolNo());
-			System.out.println("searchStaff()의 조건문 noList : "+noList);
-			System.out.println("searchStaff()의 조건문 noListSchool : "+noListSchool);
-			//noList.addAll(noListReligion);
-			noList = duplicationValue(noList, noListSchool);
-			System.out.println("searchStaff()의 조건문 noList : "+noList);
-		}
-		
-		//스킬 확인
-		if(search.getSkillNo()!=null){
-			System.out.println("skill 확인 분기문");
-			ArrayList<Integer> noListSkill = skillSelect(search.getSkillNo());
-			System.out.println("searchStaff()의 조건문 noList : "+noList);
-			System.out.println("searchStaff()의 조건문 noListSkill : "+noListSkill);
-			//noList.addAll(noListReligion);
-			noList = duplicationValue(noList, noListSkill);
-			System.out.println("searchStaff()의 조건문 noList : "+noList);
-		}
-		
-		//이름 확인
-		if(search.getName()!=null){
-			System.out.println("name 확인 분기문");
-			ArrayList<Integer> noListName = nameSelect(search.getName());
-			System.out.println("searchStaff()의 조건문 noList : "+noList);
-			System.out.println("searchStaff()의 조건문 noListName : "+noListName);
-			//noList.addAll(noListReligion);
-			noList = duplicationValue(noList, noListName);
-			System.out.println("searchStaff()의 조건문 noList : "+noList);
-		}
-		
-		//졸업일 확인
-		if(search.getGraduateDayStart()!=""||search.getGraduateDayEnd()!=""){
-			System.out.println("graduateDay 확인 분기문");
-			ArrayList<Integer> noListGraduate = graduateSelect(search.getGraduateDayStart(),search.getGraduateDayEnd());
-			System.out.println("searchStaff()의 조건문 noList : "+noList);
-			System.out.println("searchStaff()의 조건문 noListGraduate : "+noListGraduate);
-			//noList.addAll(noListReligion);
-			noList = duplicationValue(noList, noListGraduate);
-			System.out.println("searchStaff()의 조건문 noList : "+noList);
-		}
-		
-		
-		System.out.println("searchStaff()의 최종 noList : "+noList);
-		staffList = getList(sql,noList);
-	
-		return staffList;
-	}
-	
-	
-	//noList 받아서 리스트 가져와주는 메서드
-	private static ArrayList<Staff> getList(String sql, ArrayList<Integer> noList){
-		System.out.println("---Dao.java getList() 진입---");
-		Staff staff;
-		ArrayList<Staff> staffList = null;
-		PreparedStatement skillPstmt;
-		ResultSet skillRs;
-		ArrayList<Skill> skillList = null;
-		
-		try{
-			conn = DBUtil.getConnection();
-			System.out.println("noList : "+noList);
-			staffList = new ArrayList<Staff>();
-			System.out.println("sql : "+sql);
-			for(int i = 0;i<noList.size();i++){
-				pstmt = conn.prepareStatement(sql);
-				pstmt.setInt(1, noList.get(i));
-				rs = pstmt.executeQuery();
-				while(rs.next()){
-					staff = new Staff();
-					System.out.println(staff);
-					staff.setNo(rs.getInt("no"));
-					staff.setName(rs.getString("name"));
-					
-					//주민번호 자른 숫자가져와서 담고 2로나누어 떨이지면 '여' 안떨어지면'남'을 셋팅
-					int genderNum = rs.getInt("sn");
-					if(genderNum%2!=0){
-						staff.setSn("남");
-					}else{
-						staff.setSn("여");
-					}
-					
-					staff.setGraduateday(rs.getString("graduateday"));
-					School school = new School();
-					school.setGraduate(rs.getString("schoolno"));;
-					staff.setSchool(school);
-					Religion religion = new Religion();
-					religion.setName(rs.getString("religionno"));
-					staff.setReligion(religion);
-					
-					//skill 가져오는 쿼리문
-					//skill 이 한 staff 마다 여러개 이므로 ArrayList에 담아 담은참조값을 staff에 담는다.
-					skillPstmt = conn.prepareStatement("select  staffskill.staffno , staffskill.skillno, skill.name from staffskill inner join skill on staffskill.skillno = skill.`no`  where staffskill.staffno=? ; ");
-					skillPstmt.setInt(1, rs.getInt("no"));	//현재 staff의 no 값으로 skill 테이블과 staffskill 테이블을 조인해 가져온다
-					skillRs = skillPstmt.executeQuery();
-					skillList = new ArrayList<Skill>();
-					
-					//skill 에 결과값을 하나씩 넣고 그것들을 ArrayList에 담는다.
-					while(skillRs.next()){
-						Skill skill = new Skill();
-						skill.setName(skillRs.getString("name"));
-						skillList.add(skill);
-					}
-					
-					//담은 ArrayList 를 staff 에 담음
-					staff.setSkillList(skillList);
-					staffList.add(staff);
-					System.out.println(staff);
-				}
-			}
-			System.out.println("전체리스트 가져옴");
-		} catch(Exception e){
-			e.printStackTrace();
-		}finally{
-			close();
-		}
-		return staffList;
-	}
 	
 	//배열 중복검사해서 중복된 값만 가져오기
 	private static ArrayList<Integer> duplicationValue(ArrayList<Integer> list, ArrayList<Integer> list2){

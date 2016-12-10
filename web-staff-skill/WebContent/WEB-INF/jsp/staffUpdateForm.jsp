@@ -9,7 +9,7 @@
 <body>
 	<h1>Staff Updated Form</h1>
 	
-	<form action="<c:url value="/StaffUpdateAction"/>" method="post">
+	<form action="<c:url value="/StaffUpdateAction?no=${staff.no}"/>" method="post">
 	<table border="1" style="width:70%">
 		<tr>
 			<td>이름</td>
@@ -34,8 +34,9 @@
 			</td>
 			<td>기술</td>
 			<td colspan="3">
+			
 				<c:forEach items="${skillList}" var="sk" varStatus="status">
-					<input type="checkbox" name="skillNo" value="${sk.no}" <c:if test="${sk.name==staff.skillList[status.index].name}">checked</c:if>>${sk.name}
+					<input type="checkbox" name="skillNo" value="${sk.no}" >${sk.name}
 				</c:forEach>
 			</td>
 		</tr>
@@ -55,7 +56,6 @@
 		
 	</table>
 </form>
-	
 	<c:forEach items="${staff.skillList}" var="skillList" varStatus="status">
 		${skillList.name}
 		${status.index}

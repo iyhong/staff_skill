@@ -3,6 +3,7 @@ package dto;
 public class Skill {
 	private int no;
 	private String name;
+	
 	public Skill() {
 		super();
 	}
