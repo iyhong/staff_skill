@@ -55,6 +55,8 @@ public class StaffUpdateAction extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("euc-kr");
+		int no = Integer.parseInt(request.getParameter("no"));
+		System.out.println("no:"+no);
 		//이름받기
 		String name = request.getParameter("name");
 		System.out.println("name:"+name);
@@ -88,6 +90,7 @@ public class StaffUpdateAction extends HttpServlet {
 		System.out.println("graduateDay:"+graduateDay);
 		
 		Staff staff = new Staff();
+		staff.setNo(no);
 		staff.setName(name);
 		staff.setSn(sn);
 		staff.setReligion(religion);
@@ -95,7 +98,7 @@ public class StaffUpdateAction extends HttpServlet {
 		staff.setGraduateday(graduateDay);
 		System.out.println("UpdateAction staff : "+staff);
 		//Dao.insertStaff(staff, skillNo);
-		
+		Dao.updatedStaff(staff, skillNo);
 		response.sendRedirect(request.getContextPath()+"/StaffSearchAction");
 	}
 
