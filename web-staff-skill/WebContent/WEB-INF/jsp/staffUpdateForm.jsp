@@ -34,9 +34,8 @@
 			</td>
 			<td>±â¼ú</td>
 			<td colspan="3">
-			
-				<c:forEach items="${skillList}" var="sk" varStatus="status">
-					<input type="checkbox" name="skillNo" value="${sk.no}" >${sk.name}
+				<c:forEach items="${skillList}" var="sk">
+					<input type="checkbox" name="skillNo" value="${sk.no}" ${sk.checked}>${sk.name}
 				</c:forEach>
 			</td>
 		</tr>
@@ -56,10 +55,5 @@
 		
 	</table>
 </form>
-	<c:forEach items="${staff.skillList}" var="skillList" varStatus="status">
-		${skillList.name}
-		${status.index}
-	</c:forEach>
-	
 </body>
 </html>

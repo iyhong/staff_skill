@@ -36,6 +36,14 @@ public class StaffUpdateAction extends HttpServlet {
 		ArrayList<School> schoolList = Dao.selectSchool();
 		ArrayList<Skill> skillList = Dao.selectSkill();
 		
+		//skill dto에 checked 문자열 프로퍼티에 가지고있는 스킬들에만 checked 문자열 셋팅
+		for(int i = 0;i<staff.getSkillList().size();i++){
+			//System.out.println(staff.getSkillList().get(i).getNo());
+			int checkedNum = staff.getSkillList().get(i).getNo();
+			skillList.get(checkedNum-1).setChecked("checked");
+		}
+		System.out.println(skillList);
+		
 		request.setAttribute("skillList", skillList);
 		request.setAttribute("schoolList", schoolList);
 		request.setAttribute("religionList", religionList);

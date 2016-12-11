@@ -3,6 +3,7 @@ package dto;
 public class Skill {
 	private int no;
 	private String name;
+	private String checked;
 	
 	public Skill() {
 		super();
@@ -24,8 +25,16 @@ public class Skill {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public String getChecked() {
+		return checked;
+	}
+	public void setChecked(String checked) {
+		this.checked = checked;
+	}
 	@Override
 	public String toString() {
-		return "Skill [no=" + no + ", name=" + name + "]";
+		return "Skill [no=" + no + ", name=" + name + ", checked=" + checked + "]";
 	}
+	
 }
