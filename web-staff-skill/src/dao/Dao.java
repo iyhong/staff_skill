@@ -551,17 +551,22 @@ public class Dao {
 	private static ArrayList<Integer> duplicationValue(ArrayList<Integer> list, ArrayList<Integer> list2){
 		ArrayList<Integer> resultList = new ArrayList<Integer>();
 		
+//      첫번째 배열이 비어있으면 그냥 추가
 		if(list.size()==0){
 			for(int i = 0;i<list2.size();i++){
 				resultList.add(list2.get(i));
 			}
 		}
+//      첫번째 리스트가 두번째보다 크면 두밴째리스트의 개수만큼반복해서 
+//      첫번째 리스트가 두번째리스트의 각각의 값들을 포함하는지 확인후 포함하면 그값을 새로운 리스트에 담음
 		if(list.size()>list2.size()){
 			for(int i = 0;i<list2.size();i++){
 				if(list.contains(list2.get(i))){
 					resultList.add(list2.get(i));
 				}
 			}
+//      첫번째 리스트가 두밴째보다 크지않으면 첫번째리스트의 개수만큼반복해서 
+//      두번째리스트가 첫번째 리스트의 각각의 값들을 포함하는지 확인후 포함하면 그값을 새로운 리스트에 담음
 		}else{
 			for(int i = 0;i<list.size();i++){
 				if(list2.contains(list.get(i))){
