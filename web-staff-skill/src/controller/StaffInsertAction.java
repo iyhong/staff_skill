@@ -73,7 +73,7 @@ public class StaffInsertAction extends HttpServlet {
 		staff.setReligion(religion);
 		staff.setSchool(school);
 		staff.setGraduateday(graduateDay);
-		System.out.println("skillNo[0]"+skillNo[0]);
+		//System.out.println("skillNo[0]"+skillNo[0]);
 		Dao.insertStaff(staff, skillNo);
 		
 		response.sendRedirect(request.getContextPath()+"/StaffSearchAction");
