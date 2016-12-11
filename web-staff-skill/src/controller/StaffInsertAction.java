@@ -56,10 +56,10 @@ public class StaffInsertAction extends HttpServlet {
 		String[] skillStr = request.getParameterValues("skillNo");
 		int[] skillNo =null;
 		if(skillStr!=null){
+			skillNo = new int[skillStr.length];
 			for(int i = 0;i<skillStr.length;i++){
-				skillNo = new int[skillStr.length];
 				skillNo[i] = Integer.parseInt(skillStr[i]);
-				System.out.println("skillNo:"+skillNo[i]);
+				System.out.println("skillNo["+i+"]:"+skillNo[i]);
 			}
 		}
 		
@@ -73,6 +73,7 @@ public class StaffInsertAction extends HttpServlet {
 		staff.setReligion(religion);
 		staff.setSchool(school);
 		staff.setGraduateday(graduateDay);
+		System.out.println("skillNo[0]"+skillNo[0]);
 		Dao.insertStaff(staff, skillNo);
 		
 		response.sendRedirect(request.getContextPath()+"/StaffSearchAction");

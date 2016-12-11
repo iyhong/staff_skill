@@ -122,6 +122,7 @@ public class Dao {
 				System.out.println("skillNo.size()"+skillNo.length);
 				for(int i = 0 ; i<skillNo.length;i++){
 					System.out.println("반복문"+i);
+					System.out.println("skillNo["+i+"]:"+skillNo[i]);
 					pstmt.setInt(1, staffNo);
 					pstmt.setInt(2, skillNo[i]);
 					pstmt.executeUpdate();
@@ -154,28 +155,18 @@ public class Dao {
 			if(rowCount != 0){
 				System.out.println("staff 수정성공");
 			}
-			//staff 테이블에 방금 입력된 no 가져옴
-			pstmt = conn.prepareStatement("select no from staff where sn=?");
-			pstmt.setString(1, staff.getSn());
-			rs = pstmt.executeQuery();
-			System.out.println("rs:"+rs);
-			int staffNo = 0;
-			if(rs.next()){
-				staffNo = rs.getInt("no");
-				System.out.println("staffNo:"+staffNo);
-			}
 			
-			//가져온 no값으로 staffskill 테이블에  기존에있는것 삭제하고 새로운 값 입력
+			//no값으로 staffskill 테이블에  기존에있는것 삭제하고 새로운 값 입력
 			if(skillNo != null){
 				pstmt = conn.prepareStatement("delete from staffskill where staffno=?");
-				pstmt.setInt(1, staffNo);
+				pstmt.setInt(1, staff.getNo());
 				pstmt.executeUpdate();
 				
 				pstmt = conn.prepareStatement("insert into staffskill (staffno,skillno) values(?,?)");
 				System.out.println("skillNo.size()"+skillNo.length);
 				for(int i = 0 ; i<skillNo.length;i++){
 					System.out.println("반복문"+i);
-					pstmt.setInt(1, staffNo);
+					pstmt.setInt(1, staff.getNo());
 					pstmt.setInt(2, skillNo[i]);
 					pstmt.executeUpdate();
 				}
@@ -186,6 +177,34 @@ public class Dao {
 		}finally{
 			close();
 		}
+	}
+	
+	//한명의 회원정보 삭제하기 (controller 에서 호출하는 메서드)
+	public static int deleteStaff(Staff staff){
+		int rowCount = 0;
+		try{
+			conn = DBUtil.getConnection();
+			
+			//no값으로 staffskill 테이블에서 먼저 삭제
+			pstmt = conn.prepareStatement("delete from staffskill where staffno=?");
+			pstmt.setInt(1, staff.getNo());
+			pstmt.executeUpdate();
+			System.out.println("staffskill 삭제성공");
+
+			//staffskill삭제 하고 나서 staff 테이블에서 삭제
+			pstmt = conn.prepareStatement("delete from staff where no=?");
+			pstmt.setInt(1, staff.getNo());
+			rowCount = pstmt.executeUpdate();
+			if(rowCount != 0){
+				System.out.println("staff 삭제성공");
+			}
+		} catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			close();
+		}
+		
+		return rowCount;
 	}
 	
 	//한명의 회원정보 가져오기 (controller 에서 호출하는 메서드)
@@ -248,7 +267,7 @@ public class Dao {
 		ArrayList<Integer> noList = null;
 		String sql = "";
 		ArrayList<Staff> staffList = null;
-		sql = "select st.`no`,st.name, substr(sn, 8,1)as sn, re.name as religionname,re.no as religionno, sc.graduate as schoolgraduate, sc.no as schoolno,graduateday from staff st inner join religion re on st.religionno = re.`no` inner join school sc on st.schoolno = sc.`no` where st.`no`=? order by st.name asc";
+		sql = "select st.`no`,st.name, substr(sn, 8,1)as sn, re.name as religionname,re.no as religionno, sc.graduate as schoolgraduate, sc.no as schoolno,graduateday from staff st inner join religion re on st.religionno = re.`no` inner join school sc on st.schoolno = sc.`no` where st.`no`=?";
 		noList = allSelect();
 		staffList = getList(sql,noList);
 		
@@ -261,7 +280,7 @@ public class Dao {
 		System.out.println("Dao.java searchStaff() 진입");
 		ArrayList<Integer> noList = new ArrayList<Integer>();
 		ArrayList<Staff> staffList = null;
-		String sql = "select st.`no`,st.name, substr(sn, 8,1)as sn, re.name as religionname,re.no as religionno, sc.graduate as schoolgraduate, sc.no as schoolno,graduateday from staff st inner join religion re on st.religionno = re.`no` inner join school sc on st.schoolno = sc.`no` where st.`no`=? order by st.name asc";
+		String sql = "select st.`no`,st.name, substr(sn, 8,1)as sn, re.name as religionname,re.no as religionno, sc.graduate as schoolgraduate, sc.no as schoolno,graduateday from staff st inner join religion re on st.religionno = re.`no` inner join school sc on st.schoolno = sc.`no` where st.`no`=?";
 		
 		System.out.println("searchStaff의 초기 noList : "+noList);
 		if(search.getName()==""&&search.getGender()==null&&search.getReligionNo()==0
@@ -375,7 +394,7 @@ public class Dao {
 					
 					//주민번호 자른 숫자가져와서 담고 2로나누어 떨이지면 '여' 안떨어지면'남'을 셋팅
 					int genderNum = rs.getInt("sn");
-					System.out.println("getList()의 가져온 sn : "+genderNum);
+					//System.out.println("getList()의 가져온 sn : "+genderNum);
 					if(genderNum%2!=0){
 						staff.setSn("남");
 					}else{
@@ -428,7 +447,7 @@ public class Dao {
 		ArrayList<Integer> noList = null;
 		try{
 			conn = DBUtil.getConnection();
-			pstmt = conn.prepareStatement("select no from staff");
+			pstmt = conn.prepareStatement("select no from staff order by name asc");
 			rs = pstmt.executeQuery();
 			noList = new ArrayList<Integer>();
 			while(rs.next()){
