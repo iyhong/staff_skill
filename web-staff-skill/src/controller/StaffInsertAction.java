@@ -54,10 +54,13 @@ public class StaffInsertAction extends HttpServlet {
 		
 		//기술번호 여러값
 		String[] skillStr = request.getParameterValues("skillNo");
-		int[] skillNo = new int[skillStr.length];
-		for(int i = 0;i<skillStr.length;i++){
-			skillNo[i] = Integer.parseInt(skillStr[i]);
-			System.out.println("skillNo:"+skillNo[i]);
+		int[] skillNo =null;
+		if(skillStr!=null){
+			for(int i = 0;i<skillStr.length;i++){
+				skillNo = new int[skillStr.length];
+				skillNo[i] = Integer.parseInt(skillStr[i]);
+				System.out.println("skillNo:"+skillNo[i]);
+			}
 		}
 		
 		//졸업일

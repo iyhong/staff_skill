@@ -8,7 +8,7 @@
 </head>
 <body>
 	<h1>Staff Insert Form</h1>
-	
+	이름/주민번호/종교/학력/졸업일 (필수입력) 기술(선택입력)
 	<form action="<c:url value="/StaffInsertAction"/>" method="post">
 	<table border="1" style="width:70%">
 		<tr>

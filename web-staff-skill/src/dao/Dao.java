@@ -93,7 +93,6 @@ public class Dao {
 		System.out.println("insertStaff() Dao.java");
 		try{
 			conn = DBUtil.getConnection();
-			System.out.println("skillNo.size()"+skillNo.length);
 			
 			//staff 테이블에 입력
 			pstmt = conn.prepareStatement("insert into staff (name,sn, GRADUATEDAY, SCHOOLNO, RELIGIONNO) values(?,?,?,?,?)");
@@ -117,14 +116,17 @@ public class Dao {
 			}
 			
 			//가져온 no값으로 staffskill 테이블에 값 입력
-			pstmt = conn.prepareStatement("insert into staffskill (staffno,skillno) values(?,?)");
-			for(int i = 0 ; i<skillNo.length;i++){
-				System.out.println("반복문"+i);
-				pstmt.setInt(1, staffNo);
-				pstmt.setInt(2, skillNo[i]);
-				pstmt.executeUpdate();
+			if(skillNo != null){
+				pstmt = conn.prepareStatement("insert into staffskill (staffno,skillno) values(?,?)");
+				System.out.println("skillNo.size()"+skillNo.length);
+				for(int i = 0 ; i<skillNo.length;i++){
+					System.out.println("반복문"+i);
+					pstmt.setInt(1, staffNo);
+					pstmt.setInt(2, skillNo[i]);
+					pstmt.executeUpdate();
+				}
+				System.out.println("staffskill 입력성공");
 			}
-			System.out.println("staffskill 입력성공");
 		} catch(Exception e){
 			e.printStackTrace();
 		}finally{
