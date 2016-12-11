@@ -9,6 +9,8 @@
 <body>
 <%-- <%@ include file="/WEB-INF/jsp/staffSearchForm.jsp" %> --%>
 <jsp:include page="/WEB-INF/jsp/staffSearchForm.jsp" />
+<br>
+조회조건 : ${search}
 <br>조회목록<br>
 	<table border="1" style="width:70%">
 		<tr>

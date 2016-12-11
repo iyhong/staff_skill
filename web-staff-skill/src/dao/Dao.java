@@ -93,20 +93,32 @@ public class Dao {
 		System.out.println("insertStaff() Dao.java");
 		try{
 			conn = DBUtil.getConnection();
+			//두개쿼리문 실행하기때문에 오토커밋 false로 해줌
+			conn.setAutoCommit(false);
 			
 			//staff 테이블에 입력
-			pstmt = conn.prepareStatement("insert into staff (name,sn, GRADUATEDAY, SCHOOLNO, RELIGIONNO) values(?,?,?,?,?)");
+			//insert 해서 
+			String[] keyCol = {"noaaa"};
+			System.out.println("keyCol : "+keyCol[0]);
+			pstmt = conn.prepareStatement("insert into staff (name,sn, GRADUATEDAY, SCHOOLNO, RELIGIONNO) values(?,?,?,?,?)",keyCol);
 			pstmt.setString(1, staff.getName());
 			pstmt.setString(2, staff.getSn());
 			pstmt.setString(3, staff.getGraduateday());
 			pstmt.setInt(4, staff.getSchool().getNo());
 			pstmt.setInt(5, staff.getReligion().getNo());
+			
 			rowCount = pstmt.executeUpdate();
 			if(rowCount != 0){
 				System.out.println("staff 입력성공");
 			}
+			rs = pstmt.getGeneratedKeys();
+			int no = 0;
+			if(rs.next()){
+				no = rs.getInt(1);
+			}
+			
 			//staff 테이블에 방금 입력된 no 가져옴
-			pstmt = conn.prepareStatement("select no from staff where sn=?");
+			/*pstmt = conn.prepareStatement("select no from staff where sn=?");
 			pstmt.setString(1, staff.getSn());
 			rs = pstmt.executeQuery();
 			System.out.println("rs:"+rs);
@@ -114,7 +126,7 @@ public class Dao {
 			if(rs.next()){
 				staffNo = rs.getInt("no");
 				System.out.println("staffNo:"+staffNo);
-			}
+			}*/
 			
 			//가져온 no값으로 staffskill 테이블에 값 입력
 			if(skillNo != null){
@@ -123,13 +135,21 @@ public class Dao {
 				for(int i = 0 ; i<skillNo.length;i++){
 					System.out.println("반복문"+i);
 					System.out.println("skillNo["+i+"]:"+skillNo[i]);
-					pstmt.setInt(1, staffNo);
+					pstmt.setInt(1, no);
 					pstmt.setInt(2, skillNo[i]);
 					pstmt.executeUpdate();
 				}
 				System.out.println("staffskill 입력성공");
 			}
+			//커밋
+			conn.commit();
 		} catch(Exception e){
+			try {
+				//예외발생하면 롤백(쿼리실행 취소)
+				conn.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 			e.printStackTrace();
 		}finally{
 			close();
@@ -142,7 +162,7 @@ public class Dao {
 		System.out.println("updatedStaff() Dao.java");
 		try{
 			conn = DBUtil.getConnection();
-			
+			conn.setAutoCommit(false);
 			//staff 테이블에 입력
 			pstmt = conn.prepareStatement("update staff set name=?, sn=?, graduateday=?,schoolno=?,religionno=? where no=?");
 			pstmt.setString(1, staff.getName());
@@ -172,7 +192,13 @@ public class Dao {
 				}
 				System.out.println("staffskill 입력성공");
 			}
+			conn.commit();
 		} catch(Exception e){
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 			e.printStackTrace();
 		}finally{
 			close();
@@ -184,7 +210,7 @@ public class Dao {
 		int rowCount = 0;
 		try{
 			conn = DBUtil.getConnection();
-			
+			conn.setAutoCommit(false);
 			//no값으로 staffskill 테이블에서 먼저 삭제
 			pstmt = conn.prepareStatement("delete from staffskill where staffno=?");
 			pstmt.setInt(1, staff.getNo());
@@ -198,7 +224,13 @@ public class Dao {
 			if(rowCount != 0){
 				System.out.println("staff 삭제성공");
 			}
+			conn.commit();
 		} catch(Exception e){
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 			e.printStackTrace();
 		}finally{
 			close();

@@ -39,6 +39,7 @@ public class StaffSearchAction extends HttpServlet {
 		ArrayList<School> schoolList = Dao.selectSchool();
 		ArrayList<Religion> religionList = Dao.selectReligion();
 		
+		//searchForm 을 위한 셋팅
 		request.setAttribute("skillList", skillList);
 		request.setAttribute("schoolList", schoolList);
 		request.setAttribute("religionList", religionList);
@@ -103,6 +104,10 @@ public class StaffSearchAction extends HttpServlet {
 		}
 		System.out.println(search);
 		ArrayList<Staff> list = Dao.searchStaff(search);
+		
+		//검색조건 request에 담는다.
+		request.setAttribute("search", search);
+		
 		request.setAttribute("list", list);
 		request.getRequestDispatcher("/WEB-INF/jsp/staffSearchList.jsp").forward(request, response);
 	}
