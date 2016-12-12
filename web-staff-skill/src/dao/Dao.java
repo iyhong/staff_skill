@@ -501,7 +501,7 @@ public class Dao {
 		
 		try{
 			conn = DBUtil.getConnection();
-			pstmt = conn.prepareStatement("select no, name from staff where name like '%"+name+"%'");
+			pstmt = conn.prepareStatement("select no, name from staff where name like '%"+name+"%' order by name asc");
 			System.out.println("");
 			rs = pstmt.executeQuery();
 			noList = new ArrayList<Integer>();
@@ -523,9 +523,9 @@ public class Dao {
 		String sqlAdd = "";
 		if(gender.length==1){
 			if(gender[0].equals("m")){
-				sqlAdd += "where substr(sn, 8,1)=1 or substr(sn, 8,1)=3";
+				sqlAdd += "where substr(sn, 8,1)=1 or substr(sn, 8,1)=3 order by name asc";
 			}else{
-				sqlAdd += "where substr(sn, 8,1)=2 or substr(sn, 8,1)=4";
+				sqlAdd += "where substr(sn, 8,1)=2 or substr(sn, 8,1)=4 order by name asc";
 			}
 		}else{
 			sqlAdd += "";
@@ -554,7 +554,7 @@ public class Dao {
 		ArrayList<Integer> noList = null;
 		try{
 			conn = DBUtil.getConnection();
-			pstmt = conn.prepareStatement("select no from staff where religionno=?");
+			pstmt = conn.prepareStatement("select no from staff where religionno=? order by name asc");
 			pstmt.setInt(1, religionNo);
 			rs = pstmt.executeQuery();
 			noList = new ArrayList<Integer>();
@@ -583,8 +583,8 @@ public class Dao {
 		}
 		try{
 			conn = DBUtil.getConnection();
-			pstmt = conn.prepareStatement("select no from staff "+sqlAdd);
-			System.out.println("schoolno 쿼리문 : select no from staff "+sqlAdd);
+			pstmt = conn.prepareStatement("select no from staff "+sqlAdd+" order by schoolno asc, name asc");
+			System.out.println("schoolno 쿼리문 : select no from staff "+sqlAdd+" order by schoolno asc, name asc");
 			rs = pstmt.executeQuery();
 			noList = new ArrayList<Integer>();
 			while(rs.next()){
@@ -611,8 +611,8 @@ public class Dao {
 		}
 		try{
 			conn = DBUtil.getConnection();
-			pstmt = conn.prepareStatement("select DISTINCT staff.`no` from staff inner join staffskill on staff.`no` = staffskill.staffno "+sqlAdd);
-			System.out.println("select DISTINCT staff.`no` from staff inner join staffskill on staff.`no` = staffskill.staffno "+sqlAdd);
+			pstmt = conn.prepareStatement("select DISTINCT staff.`no` from staff inner join staffskill on staff.`no` = staffskill.staffno "+sqlAdd+" order by name asc");
+			System.out.println("select DISTINCT staff.`no` from staff inner join staffskill on staff.`no` = staffskill.staffno "+sqlAdd+" order by name asc");
 			rs = pstmt.executeQuery();
 			noList = new ArrayList<Integer>();
 			while(rs.next()){
@@ -634,15 +634,15 @@ public class Dao {
 		String sqlAdd = "";
 		//졸업일찾을때 앞에입력안하고 뒤만하면
 		if(!graduateDayStart.equals("")&&!graduateDayEnd.equals("")){
-			sqlAdd += "where graduateday between '"+graduateDayStart+"' and '"+graduateDayEnd+"'";
+			sqlAdd += "where graduateday between '"+graduateDayStart+"' and '"+graduateDayEnd+"' order by graduateday asc";
 		}else if(!graduateDayStart.equals("")){
-			sqlAdd += "where graduateday > '"+graduateDayStart+"'";
+			sqlAdd += "where graduateday >= '"+graduateDayStart+"'";
 		}else{
-			sqlAdd += "where graduateday < '"+graduateDayEnd+"'";
+			sqlAdd += "where graduateday <= '"+graduateDayEnd+"'";
 		}
 		try{
 			conn = DBUtil.getConnection();
-			pstmt = conn.prepareStatement("select no, name, graduateday from staff "+sqlAdd);
+			pstmt = conn.prepareStatement("select no, name, graduateday from staff "+sqlAdd+" order by graduateday asc");
 			System.out.println("");
 			rs = pstmt.executeQuery();
 			noList = new ArrayList<Integer>();
