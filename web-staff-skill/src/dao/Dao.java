@@ -315,6 +315,7 @@ public class Dao {
 		String sql = "select st.`no`,st.name, substr(sn, 8,1)as sn, re.name as religionname,re.no as religionno, sc.graduate as schoolgraduate, sc.no as schoolno,graduateday from staff st inner join religion re on st.religionno = re.`no` inner join school sc on st.schoolno = sc.`no` where st.`no`=?";
 		
 		System.out.println("searchStaff의 초기 noList : "+noList);
+		
 		if(search.getName()==""&&search.getGender()==null&&search.getReligionNo()==0
 				&&search.getSchoolNo()==null&&search.getSkillNo()==null
 				&&search.getGraduateDayStart()==""&&search.getGraduateDayEnd()==""){
@@ -333,7 +334,6 @@ public class Dao {
 			//noList.addAll(noListGender);
 			noList = duplicationValue(noList, noListGender);
 			System.out.println("searchStaff()의 조건문 noList : "+noList);
-
 		}
 		
 		//종교 확인
@@ -377,8 +377,10 @@ public class Dao {
 			System.out.println("searchStaff()의 조건문 noList : "+noList);
 			System.out.println("searchStaff()의 조건문 noListName : "+noListName);
 			//noList.addAll(noListReligion);
-			noList = duplicationValue(noList, noListName);
-			System.out.println("searchStaff()의 조건문 noList : "+noList);
+			if(noList.size()!=0){
+				noList = duplicationValue(noList, noListName);
+				System.out.println("searchStaff()의 조건문 noList : "+noList);
+			}
 		}
 		
 		//졸업일 확인
