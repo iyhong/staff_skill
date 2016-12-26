@@ -371,16 +371,14 @@ public class Dao {
 		}
 		
 		//이름 확인
-		if(search.getName()!=null){
+		if(search.getName()!=""){
 			System.out.println("name 확인 분기문");
 			ArrayList<Integer> noListName = nameSelect(search.getName());
 			System.out.println("searchStaff()의 조건문 noList : "+noList);
 			System.out.println("searchStaff()의 조건문 noListName : "+noListName);
 			//noList.addAll(noListReligion);
-			if(noList.size()!=0){
-				noList = duplicationValue(noList, noListName);
-				System.out.println("searchStaff()의 조건문 noList : "+noList);
-			}
+			noList = duplicationValue(noList, noListName);
+			System.out.println("searchStaff()의 조건문 noList : "+noList);
 		}
 		
 		//졸업일 확인
