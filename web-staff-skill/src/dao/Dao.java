@@ -689,7 +689,7 @@ public class Dao {
 	}
 	
 	//객체종료하기
-	public static void close(){
+	private static void close(){
 		if (rs != null)	try { rs.close();} catch (SQLException ex) {}
 		if (pstmt != null) try { pstmt.close();	} catch (SQLException ex) {}
 		if (conn != null) try {	conn.close(); } catch (SQLException ex) {}
