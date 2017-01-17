@@ -25,7 +25,7 @@ public class Dao {
 		try{
 			conn = DBUtil.getConnection();
 			System.out.println("conn : "+conn);
-			pstmt = conn.prepareStatement("select no,name from skill");
+			pstmt = conn.prepareStatement("select no,name from skill order by no asc");
 			rs = pstmt.executeQuery();
 			skillList = new ArrayList<Skill>();
 			while(rs.next()){
@@ -48,7 +48,7 @@ public class Dao {
 		try{
 			conn = DBUtil.getConnection();
 			System.out.println("conn : "+conn);
-			pstmt = conn.prepareStatement("select no,graduate from school");
+			pstmt = conn.prepareStatement("select no,graduate from school order by no asc");
 			rs = pstmt.executeQuery();
 			schoolList = new ArrayList<School>();
 			while(rs.next()){
@@ -71,7 +71,7 @@ public class Dao {
 		try{
 			conn = DBUtil.getConnection();
 			System.out.println("conn : "+conn);
-			pstmt = conn.prepareStatement("select no,name from religion");
+			pstmt = conn.prepareStatement("select no,name from religion order by no asc");
 			rs = pstmt.executeQuery();
 			religionlList = new ArrayList<Religion>();
 			while(rs.next()){
