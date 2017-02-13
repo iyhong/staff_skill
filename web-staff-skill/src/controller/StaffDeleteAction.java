@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import dao.Dao;
 import dto.Staff;
 
-@WebServlet("/StaffDeleteAction")
+@WebServlet("/delete")
 public class StaffDeleteAction extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		int no = Integer.parseInt(request.getParameter("no"));

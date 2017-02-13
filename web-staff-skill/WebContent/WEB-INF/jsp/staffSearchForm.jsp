@@ -7,8 +7,8 @@
 <title></title>
 </head>
 <body>
-<a href="<c:url value="/StaffInsertAction"/>">등록</a>
-<form action="<c:url value="/StaffSearchAction"/>" method="post">
+<a href="<c:url value="/insert"/>">등록</a>
+<form action="<c:url value="/"/>" method="post">
 	<table border="1" style="width:70%">
 		<tr>
 			<td>이름</td>

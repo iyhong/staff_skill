@@ -16,7 +16,7 @@ import dto.Search;
 import dto.Skill;
 import dto.Staff;
 
-@WebServlet("/StaffSearchAction")
+@WebServlet("/")
 public class StaffSearchAction extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ArrayList<Skill> skillList = Dao.selectSkill();

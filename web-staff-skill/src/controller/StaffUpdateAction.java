@@ -15,7 +15,7 @@ import dto.School;
 import dto.Skill;
 import dto.Staff;
 
-@WebServlet("/StaffUpdateAction")
+@WebServlet("/update")
 public class StaffUpdateAction extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("StaffUpdateAction doGet() ¡¯¿‘!!");

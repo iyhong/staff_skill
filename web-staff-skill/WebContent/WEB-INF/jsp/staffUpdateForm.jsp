@@ -9,7 +9,7 @@
 <body>
 	<h1>Staff Updated Form</h1>
 	
-	<form action="<c:url value="/StaffUpdateAction?no=${staff.no}"/>" method="post">
+	<form action="<c:url value="/update?no=${staff.no}"/>" method="post">
 	<table border="1" style="width:70%">
 		<tr>
 			<td>¿Ã∏ß</td>
