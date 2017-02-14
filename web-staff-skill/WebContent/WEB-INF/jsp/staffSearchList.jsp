@@ -36,8 +36,8 @@
 					</td>
 					<td>${staff.graduateday}</td>
 					
-					<td><a href="<c:url value="/StaffUpdateAction?no=${staff.no}"/>">수정</a></td>
-					<td><a href="<c:url value="/StaffDeleteAction?no=${staff.no}"/>">삭제</a></td>
+					<td><a href="<c:url value="/update?no=${staff.no}"/>">수정</a></td>
+					<td><a href="<c:url value="/delete?no=${staff.no}"/>">삭제</a></td>
 				</tr>
 			</c:forEach>
 			

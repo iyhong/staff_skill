@@ -25,7 +25,7 @@ public class Dao {
 		try{
 			conn = DBUtil.getConnection();
 			System.out.println("conn : "+conn);
-			pstmt = conn.prepareStatement("select no,name from skill order by no asc");
+			pstmt = conn.prepareStatement("select no,name from SS_skill order by no asc");
 			rs = pstmt.executeQuery();
 			skillList = new ArrayList<Skill>();
 			while(rs.next()){
@@ -48,7 +48,7 @@ public class Dao {
 		try{
 			conn = DBUtil.getConnection();
 			System.out.println("conn : "+conn);
-			pstmt = conn.prepareStatement("select no,graduate from school order by no asc");
+			pstmt = conn.prepareStatement("select no,graduate from SS_school order by no asc");
 			rs = pstmt.executeQuery();
 			schoolList = new ArrayList<School>();
 			while(rs.next()){
@@ -71,7 +71,7 @@ public class Dao {
 		try{
 			conn = DBUtil.getConnection();
 			System.out.println("conn : "+conn);
-			pstmt = conn.prepareStatement("select no,name from religion order by no asc");
+			pstmt = conn.prepareStatement("select no,name from SS_religion order by no asc");
 			rs = pstmt.executeQuery();
 			religionlList = new ArrayList<Religion>();
 			while(rs.next()){
@@ -100,7 +100,7 @@ public class Dao {
 			//insert 해서 
 			String[] keyCol = {"noaaa"};
 			System.out.println("keyCol : "+keyCol[0]);
-			pstmt = conn.prepareStatement("insert into staff (name,sn, GRADUATEDAY, SCHOOLNO, RELIGIONNO) values(?,?,?,?,?)",keyCol);
+			pstmt = conn.prepareStatement("insert into SS_staff (name,sn, GRADUATEDAY, SCHOOLNO, RELIGIONNO) values(?,?,?,?,?)",keyCol);
 			pstmt.setString(1, staff.getName());
 			pstmt.setString(2, staff.getSn());
 			pstmt.setString(3, staff.getGraduateday());
@@ -130,7 +130,7 @@ public class Dao {
 			
 			//가져온 no값으로 staffskill 테이블에 값 입력
 			if(skillNo != null){
-				pstmt = conn.prepareStatement("insert into staffskill (staffno,skillno) values(?,?)");
+				pstmt = conn.prepareStatement("insert into SS_staffskill (staffno,skillno) values(?,?)");
 				System.out.println("skillNo.size()"+skillNo.length);
 				for(int i = 0 ; i<skillNo.length;i++){
 					System.out.println("반복문"+i);
@@ -164,7 +164,7 @@ public class Dao {
 			conn = DBUtil.getConnection();
 			conn.setAutoCommit(false);
 			//staff 테이블에 입력
-			pstmt = conn.prepareStatement("update staff set name=?, sn=?, graduateday=?,schoolno=?,religionno=? where no=?");
+			pstmt = conn.prepareStatement("update SS_staff set name=?, sn=?, graduateday=?,schoolno=?,religionno=? where no=?");
 			pstmt.setString(1, staff.getName());
 			pstmt.setString(2, staff.getSn());
 			pstmt.setString(3, staff.getGraduateday());
@@ -178,11 +178,11 @@ public class Dao {
 			
 			//no값으로 staffskill 테이블에  기존에있는것 삭제하고 새로운 값 입력
 			if(skillNo != null){
-				pstmt = conn.prepareStatement("delete from staffskill where staffno=?");
+				pstmt = conn.prepareStatement("delete from SS_staffskill where staffno=?");
 				pstmt.setInt(1, staff.getNo());
 				pstmt.executeUpdate();
 				
-				pstmt = conn.prepareStatement("insert into staffskill (staffno,skillno) values(?,?)");
+				pstmt = conn.prepareStatement("insert into SS_staffskill (staffno,skillno) values(?,?)");
 				System.out.println("skillNo.size()"+skillNo.length);
 				for(int i = 0 ; i<skillNo.length;i++){
 					System.out.println("반복문"+i);
@@ -212,13 +212,13 @@ public class Dao {
 			conn = DBUtil.getConnection();
 			conn.setAutoCommit(false);
 			//no값으로 staffskill 테이블에서 먼저 삭제
-			pstmt = conn.prepareStatement("delete from staffskill where staffno=?");
+			pstmt = conn.prepareStatement("delete from SS_staffskill where staffno=?");
 			pstmt.setInt(1, staff.getNo());
 			pstmt.executeUpdate();
 			System.out.println("staffskill 삭제성공");
 
 			//staffskill삭제 하고 나서 staff 테이블에서 삭제
-			pstmt = conn.prepareStatement("delete from staff where no=?");
+			pstmt = conn.prepareStatement("delete from SS_staff where no=?");
 			pstmt.setInt(1, staff.getNo());
 			rowCount = pstmt.executeUpdate();
 			if(rowCount != 0){
@@ -242,7 +242,7 @@ public class Dao {
 	//한명의 회원정보 가져오기 (controller 에서 호출하는 메서드)
 	public static Staff oneStaff(Staff staff){
 		System.out.println("Dao.java oneStaff() 진입");
-		String sql = "select st.`no`,st.name, st.sn, re.name as religionname,re.no as religionno, sc.graduate as schoolgraduate, sc.no as schoolno,graduateday from staff st inner join religion re on st.religionno = re.`no` inner join school sc on st.schoolno = sc.`no` where st.`no`=? order by st.name asc";
+		String sql = "select st.`no`,st.name, st.sn, re.name as religionname,re.no as religionno, sc.graduate as schoolgraduate, sc.no as schoolno,graduateday from SS_staff st inner join SS_religion re on st.religionno = re.`no` inner join SS_school sc on st.schoolno = sc.`no` where st.`no`=? order by st.name asc";
 		PreparedStatement skillPstmt;
 		ResultSet skillRs;
 		ArrayList<Skill> skillList = null;
@@ -267,7 +267,7 @@ public class Dao {
 				
 				//skill 가져오는 쿼리문
 				//skill 이 한 staff 마다 여러개 이므로 ArrayList에 담아 담은참조값을 staff에 담는다.
-				skillPstmt = conn.prepareStatement("select  staffskill.staffno , staffskill.skillno, skill.name from staffskill inner join skill on staffskill.skillno = skill.`no`  where staffskill.staffno=? ; ");
+				skillPstmt = conn.prepareStatement("select  SS_staffskill.staffno , SS_staffskill.skillno, SS_skill.name from SS_staffskill inner join SS_skill on SS_staffskill.skillno = SS_skill.`no`  where SS_staffskill.staffno=? ; ");
 				skillPstmt.setInt(1, rs.getInt("no"));	//현재 staff의 no 값으로 skill 테이블과 staffskill 테이블을 조인해 가져온다
 				skillRs = skillPstmt.executeQuery();
 				skillList = new ArrayList<Skill>();
@@ -299,7 +299,7 @@ public class Dao {
 		ArrayList<Integer> noList = null;
 		String sql = "";
 		ArrayList<Staff> staffList = null;
-		sql = "select st.`no`,st.name, substr(sn, 8,1)as sn, re.name as religionname,re.no as religionno, sc.graduate as schoolgraduate, sc.no as schoolno,graduateday from staff st inner join religion re on st.religionno = re.`no` inner join school sc on st.schoolno = sc.`no` where st.`no`=?";
+		sql = "select st.`no`,st.name, substr(sn, 8,1)as sn, re.name as religionname,re.no as religionno, sc.graduate as schoolgraduate, sc.no as schoolno,graduateday from SS_staff st inner join SS_religion re on st.religionno = re.`no` inner join SS_school sc on st.schoolno = sc.`no` where st.`no`=?";
 		noList = allSelect();
 		staffList = getList(sql,noList);
 		
@@ -312,7 +312,7 @@ public class Dao {
 		System.out.println("Dao.java searchStaff() 진입");
 		ArrayList<Integer> noList = new ArrayList<Integer>();
 		ArrayList<Staff> staffList = null;
-		String sql = "select st.`no`,st.name, substr(sn, 8,1)as sn, re.name as religionname,re.no as religionno, sc.graduate as schoolgraduate, sc.no as schoolno,graduateday from staff st inner join religion re on st.religionno = re.`no` inner join school sc on st.schoolno = sc.`no` where st.`no`=?";
+		String sql = "select st.`no`,st.name, substr(sn, 8,1)as sn, re.name as religionname,re.no as religionno, sc.graduate as schoolgraduate, sc.no as schoolno,graduateday from SS_staff st inner join SS_religion re on st.religionno = re.`no` inner join SS_school sc on st.schoolno = sc.`no` where st.`no`=?";
 		
 		System.out.println("searchStaff의 초기 noList : "+noList);
 		
@@ -445,7 +445,7 @@ public class Dao {
 					
 					//skill 가져오는 쿼리문
 					//skill 이 한 staff 마다 여러개 이므로 ArrayList에 담아 담은참조값을 staff에 담는다.
-					skillPstmt = conn.prepareStatement("select staffskill.staffno , staffskill.skillno, skill.name from staffskill inner join skill on staffskill.skillno = skill.`no`  where staffskill.staffno=? ; ");
+					skillPstmt = conn.prepareStatement("select SS_staffskill.staffno , SS_staffskill.skillno, SS_skill.name from SS_staffskill inner join SS_skill on SS_staffskill.skillno = SS_skill.`no`  where SS_staffskill.staffno=? ; ");
 					skillPstmt.setInt(1, rs.getInt("no"));	//현재 staff의 no 값으로 skill 테이블과 staffskill 테이블을 조인해 가져온다
 					skillRs = skillPstmt.executeQuery();
 					skillList = new ArrayList<Skill>();
@@ -479,7 +479,7 @@ public class Dao {
 		ArrayList<Integer> noList = null;
 		try{
 			conn = DBUtil.getConnection();
-			pstmt = conn.prepareStatement("select no from staff order by name asc");
+			pstmt = conn.prepareStatement("select no from SS_staff order by name asc");
 			rs = pstmt.executeQuery();
 			noList = new ArrayList<Integer>();
 			while(rs.next()){
@@ -501,7 +501,7 @@ public class Dao {
 		
 		try{
 			conn = DBUtil.getConnection();
-			pstmt = conn.prepareStatement("select no, name from staff where name like '%"+name+"%' order by name asc");
+			pstmt = conn.prepareStatement("select no, name from SS_staff where name like '%"+name+"%' order by name asc");
 			System.out.println("");
 			rs = pstmt.executeQuery();
 			noList = new ArrayList<Integer>();
@@ -532,8 +532,8 @@ public class Dao {
 		}
 		try{
 			conn = DBUtil.getConnection();
-			pstmt = conn.prepareStatement("select no from staff "+sqlAdd);
-			System.out.println("genderSelect()의 sql : select no from staff "+sqlAdd);
+			pstmt = conn.prepareStatement("select no from SS_staff "+sqlAdd);
+			System.out.println("genderSelect()의 sql : select no from SS_staff "+sqlAdd);
 			rs = pstmt.executeQuery();
 			noList = new ArrayList<Integer>();
 			while(rs.next()){
@@ -554,7 +554,7 @@ public class Dao {
 		ArrayList<Integer> noList = null;
 		try{
 			conn = DBUtil.getConnection();
-			pstmt = conn.prepareStatement("select no from staff where religionno=? order by name asc");
+			pstmt = conn.prepareStatement("select no from SS_staff where religionno=? order by name asc");
 			pstmt.setInt(1, religionNo);
 			rs = pstmt.executeQuery();
 			noList = new ArrayList<Integer>();
@@ -583,8 +583,8 @@ public class Dao {
 		}
 		try{
 			conn = DBUtil.getConnection();
-			pstmt = conn.prepareStatement("select no from staff "+sqlAdd+" order by schoolno asc, name asc");
-			System.out.println("schoolno 쿼리문 : select no from staff "+sqlAdd+" order by schoolno asc, name asc");
+			pstmt = conn.prepareStatement("select no from SS_staff "+sqlAdd+" order by schoolno asc, name asc");
+			System.out.println("schoolno 쿼리문 : select no from SS_staff "+sqlAdd+" order by schoolno asc, name asc");
 			rs = pstmt.executeQuery();
 			noList = new ArrayList<Integer>();
 			while(rs.next()){
@@ -604,15 +604,15 @@ public class Dao {
 		ArrayList<Integer> noList = null;
 		String sqlAdd = "where ";
 		for(int i=0;i<skillNo.length;i++){
-			sqlAdd += "staffskill.skillno='"+skillNo[i]+"'";
+			sqlAdd += "SS_staffskill.skillno='"+skillNo[i]+"'";
 			if(i!=skillNo.length-1){
 				sqlAdd += " or ";
 			}
 		}
 		try{
 			conn = DBUtil.getConnection();
-			pstmt = conn.prepareStatement("select DISTINCT staff.`no` from staff inner join staffskill on staff.`no` = staffskill.staffno "+sqlAdd+" order by name asc");
-			System.out.println("select DISTINCT staff.`no` from staff inner join staffskill on staff.`no` = staffskill.staffno "+sqlAdd+" order by name asc");
+			pstmt = conn.prepareStatement("select DISTINCT SS_staff.`no` from SS_staff inner join SS_staffskill on SS_staff.`no` = SS_staffskill.staffno "+sqlAdd+" order by name asc");
+			System.out.println("select DISTINCT SS_staff.`no` from SS_staff inner join SS_staffskill on staff.`no` = SS_staffskill.staffno "+sqlAdd+" order by name asc");
 			rs = pstmt.executeQuery();
 			noList = new ArrayList<Integer>();
 			while(rs.next()){
@@ -642,7 +642,7 @@ public class Dao {
 		}
 		try{
 			conn = DBUtil.getConnection();
-			pstmt = conn.prepareStatement("select no, name, graduateday from staff "+sqlAdd+" order by graduateday asc");
+			pstmt = conn.prepareStatement("select no, name, graduateday from SS_staff "+sqlAdd+" order by graduateday asc");
 			System.out.println("");
 			rs = pstmt.executeQuery();
 			noList = new ArrayList<Integer>();

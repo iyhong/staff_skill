@@ -11,15 +11,17 @@ public class DBUtil {
 	static {
 		//mysql
 		driver = "com.mysql.jdbc.Driver"; 
-		url = "jdbc:mysql://127.0.0.1:3306/jjdev2?useUnicode=true&characterEncoding=euckr";
-		
+		url = "jdbc:mysql://127.0.0.1:3306/loverman85?useUnicode=true&characterEncoding=euckr";
+		//url = "jdbc:mysql://127.0.0.1:3306/jjdev2?useUnicode=true&characterEncoding=euckr";
 		
 		//oracle
 		//driver = "oracle.jdbc.OracleDriver"; 
 		//url = "jdbc:oracle:thin:@localhost:1521:xe";
 		
-		user = "root";
-		pw = "java0000";
+		user = "loverman85";
+		pw = "java5963";
+		//user = "root";
+		//pw = "java0000";
 	}
 	
 	public static Connection getConnection() {
